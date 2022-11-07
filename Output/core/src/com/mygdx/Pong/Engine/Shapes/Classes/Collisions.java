@@ -1,5 +1,6 @@
 package com.mygdx.Pong.Engine.Shapes.Classes;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.Pong.Constants;
 
@@ -7,18 +8,20 @@ public class Collisions {
     private Vector2 distanceToPlayer = new Vector2();
     private Vector2 closestPointToPlayer = new Vector2();
 
+    /** Pong-specific below **/
     public float calculateDeflectionAngle(Rectangle player, Circle ball) {
         float relativeIntersectY = (player.getCenterY()) - (ball.getCenterY());
         float normalIntersectY = relativeIntersectY / (player.getHeight()/2);
         float theta = normalIntersectY * Constants.MAX_ANGLE;
-        return (float) Math.toRadians(theta);
+        return MathUtils.clamp((float) Math.toRadians(theta), -Constants.MAX_BALL_SPEED, Constants.MAX_BALL_SPEED);
     }
 
+    /** Pong-specific below **/
     public float calculateDeflectionAngle(float centerY, Circle ball) {
         float relativeIntersectY = (centerY) - (ball.getCenterY());
         float normalIntersectY = relativeIntersectY / (centerY);
         float theta = normalIntersectY * Constants.MAX_ANGLE;
-        return (float) Math.toRadians(theta);
+        return MathUtils.clamp((float) Math.toRadians(theta), -Constants.MAX_BALL_SPEED, Constants.MAX_BALL_SPEED);
     }
 
     public boolean isCollidingCircleRect(Rectangle player, Circle ball) {
