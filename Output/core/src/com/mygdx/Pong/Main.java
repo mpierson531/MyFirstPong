@@ -1,6 +1,7 @@
 package com.mygdx.Pong;
 
 import com.badlogic.gdx.Game;
+import com.mygdx.Pong.Screens.StartMenu;
 
 public class Main extends Game {
 

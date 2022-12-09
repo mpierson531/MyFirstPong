@@ -9,39 +9,39 @@ public class Collisions {
     private Vector2 closestPointToPlayer = new Vector2();
 
     /** Pong-specific below **/
-    public float calculateDeflectionAngle(Rectangle player, Circle ball) {
-        float relativeIntersectY = (player.getCenterY()) - (ball.getCenterY());
-        float normalIntersectY = relativeIntersectY / (player.getHeight()/2);
-        float theta = normalIntersectY * Constants.MAX_ANGLE;
+    public float calculateDeflectionAngle(Rectangle rectangle, Circle circle) {
+        float relativeIntersectY = (rectangle.getCenterY()) - (circle.getCenterY());
+        float normalIntersectY = relativeIntersectY / (rectangle.getHeight()/2);
+        float theta = normalIntersectY * Constants.MAX_BALL_ANGLE;
         return MathUtils.clamp((float) Math.toRadians(theta), -Constants.MAX_BALL_SPEED, Constants.MAX_BALL_SPEED);
     }
 
     /** Pong-specific below **/
-    public float calculateDeflectionAngle(float centerY, Circle ball) {
-        float relativeIntersectY = (centerY) - (ball.getCenterY());
+    public float calculateDeflectionAngle(float centerY, Circle circle) {
+        float relativeIntersectY = (centerY) - (circle.getCenterY());
         float normalIntersectY = relativeIntersectY / (centerY);
-        float theta = normalIntersectY * Constants.MAX_ANGLE;
+        float theta = normalIntersectY * Constants.MAX_BALL_ANGLE;
         return MathUtils.clamp((float) Math.toRadians(theta), -Constants.MAX_BALL_SPEED, Constants.MAX_BALL_SPEED);
     }
 
-    public boolean isCollidingCircleRect(Rectangle player, Circle ball) {
-        closestPointToPlayer = new Vector2(ball.getCenter());
+    public boolean isCollidingCircleRect(Rectangle rectangle, Circle circle) {
+        closestPointToPlayer = new Vector2(circle.getCenter());
 
-        if (ball.getCenterX() < player.getMinX()) {
-            closestPointToPlayer.x = player.getMinX();
-        } else if (ball.getCenterX() > player.getMaxX()) {
-            closestPointToPlayer.x = player.getMaxX();
+        if (circle.getCenterX() < rectangle.getMinX()) {
+            closestPointToPlayer.x = rectangle.getMinX();
+        } else if (circle.getCenterX() > rectangle.getMaxX()) {
+            closestPointToPlayer.x = rectangle.getMaxX();
         }
 
-        if (ball.getCenterY() < player.getMinY()) {
-            closestPointToPlayer.y = player.getMinY();
-        } else if (ball.getCenterY() > player.getMaxY()) {
-            closestPointToPlayer.y = player.getMaxY();
+        if (circle.getCenterY() < rectangle.getMinY()) {
+            closestPointToPlayer.y = rectangle.getMinY();
+        } else if (circle.getCenterY() > rectangle.getMaxY()) {
+            closestPointToPlayer.y = rectangle.getMaxY();
         }
 
-        distanceToPlayer = new Vector2(ball.getCenter().sub(closestPointToPlayer));
+        distanceToPlayer = new Vector2(circle.getCenter().sub(closestPointToPlayer));
 
-        return distanceToPlayer.len2() <= ball.getRadius() * ball.getRadius();
+        return distanceToPlayer.len2() <= circle.getRadius() * circle.getRadius();
     }
 
     public void reset() {

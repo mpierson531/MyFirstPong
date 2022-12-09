@@ -57,5 +57,7 @@ project(":core") {
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        implementation 'com.github.raeleus.stripe:freetype:1.4.1'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
     }
 }

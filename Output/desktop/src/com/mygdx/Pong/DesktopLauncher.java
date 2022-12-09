@@ -1,7 +1,6 @@
 package com.mygdx.Pong;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
@@ -12,7 +11,7 @@ public class DesktopLauncher {
 		config.setTitle("MyFirstPong");
 		config.setForegroundFPS(60);
 		config.useVsync(true);
-		config.enableGLDebugOutput(true, System.err);
+		config.enableGLDebugOutput(true, System.out);
 		new Lwjgl3Application(new Main(), config).setLogLevel(Application.LOG_DEBUG);
 	}
 }

@@ -12,7 +12,7 @@ public class Player {
         playerRect = new Rectangle(x, y, width, height);
     }
 
-    public void onePlayerMove() {
+    public void wasdArrowMove() {
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) playerRect.y += Constants.PLAYER_MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) playerRect.y -= Constants.PLAYER_MOVEMENT_SPEED * Gdx.graphics.getDeltaTime();
 
@@ -39,8 +39,8 @@ public class Player {
         return this.playerRect;
     }
 
-    public void updateScore() {
-        score++;
+    public void updateScore(int numToIncrementBy) {
+        score += numToIncrementBy;
     }
 
     public void resetScore() {

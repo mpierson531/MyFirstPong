@@ -5,11 +5,12 @@ import com.mygdx.Pong.Engine.Shapes.Interfaces.Shape;
 
 public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Shape {
     private final float minX, minY, maxX, maxY;
-
-    private Vector2 min;
-    private Vector2 max;
-    private float centerX, centerY;
-    private Vector2 center;
+    private float perimeter;
+    private final Vector2 min;
+    private final Vector2 max;
+    private final float centerX;
+    private final float centerY;
+    private final Vector2 center;
     public Rectangle(float x, float y, float width, float height) {
         super(x, y, width, height);
 

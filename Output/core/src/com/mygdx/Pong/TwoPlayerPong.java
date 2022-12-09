@@ -1,13 +1,15 @@
 package com.mygdx.Pong;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.mygdx.Pong.Engine.Math.Vector2;
 import com.mygdx.Pong.Engine.Shapes.Classes.Circle;
 import com.mygdx.Pong.Engine.Shapes.Classes.Collisions;
 
@@ -19,10 +21,15 @@ public class TwoPlayerPong implements Screen {
 	private final Collisions collisions;
 	private final OrthographicCamera camera;
 	private final ScoreUI scoreUI;
+	private Game game;
+	private ExtendViewport extendViewport;
 
-	public TwoPlayerPong() {
+	public TwoPlayerPong(Game game) {
+		this.game = game;
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
+		extendViewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
 		shapeRenderer = new ShapeRenderer();
 
@@ -31,7 +38,7 @@ public class TwoPlayerPong implements Screen {
 		playerTwo = new Player(Gdx.graphics.getWidth() - 50, 50, 30f, 100f);
 		ball = new Circle(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 10f, new Vector2(-Constants.MAX_BALL_SPEED, 10));
 
-		scoreUI = new ScoreUI();
+		scoreUI = new ScoreUI(this.game, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
 		collisions = new Collisions();
 	}
@@ -42,7 +49,6 @@ public class TwoPlayerPong implements Screen {
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.setColor(Color.WHITE);
-		camera.update();
 
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -53,6 +59,8 @@ public class TwoPlayerPong implements Screen {
 		shapeRenderer.end();
 
 		scoreUI.drawScores(playerOne.getScore(), playerTwo.getScore(), camera);
+		scoreUI.act(Gdx.graphics.getDeltaTime());
+		scoreUI.draw();
 
 //		scoreUI.getStage().act(Gdx.graphics.getDeltaTime());
 
@@ -72,7 +80,11 @@ public class TwoPlayerPong implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-
+		System.out.println("Screen height after resizing: " + extendViewport.getScreenHeight());
+		System.out.println("World height after resizing: " + extendViewport.getWorldHeight());
+		extendViewport.update(width, height, true);
+//		extendViewport.apply(true);
+		scoreUI.resize(width, height);
 	}
 
 	@Override
@@ -127,12 +139,12 @@ public class TwoPlayerPong implements Screen {
 
 	private void checkPlayerScored() {
 		if (ball.getX() > Gdx.graphics.getWidth() + 2.5f) {
-			playerOne.updateScore();
+			playerOne.updateScore(1);
 			resetBall();
 		}
 
 		if (ball.getX() < 0 - 2.5f) {
-			playerTwo.updateScore();
+			playerTwo.updateScore(1);
 			resetBall();
 		}
 	}
