@@ -56,8 +56,8 @@ public class ScoreUI {
 
         pixelFont.setColor(Color.WHITE);
 
-        windowHalfWidth = Gdx.graphics.getWidth()/2f;
-        windowHeight = Gdx.graphics.getHeight();
+        windowHalfWidth = screenSize.x/2f;
+        windowHeight = screenSize.y;
         lineWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 6f), screenSize.x);
         lineHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 12.5f), screenSize.y);
 
@@ -74,7 +74,7 @@ public class ScoreUI {
         backButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 25), screenSize.y);
         backButtonSize = new Vector2(backButtonWidth, backButtonHeight);
 
-        stage = new Stage();
+        stage = new Stage(extendViewport);
         backButton = new TextButton("Back", backButtonStyle, backButtonPos, backButtonSize);
         backButton.addListener(new ClickListener() {
             @Override
@@ -88,14 +88,13 @@ public class ScoreUI {
     }
 
     public void drawScores(int leftScore, int rightScore, Camera camera) {
-        windowHeight = Gdx.graphics.getHeight();
         fontBatch.setProjectionMatrix(stage.getViewport().getCamera().combined);
         shapeRenderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
         shapeRenderer.setColor(Color.WHITE);
 
         fontBatch.begin();
-        pixelFont.draw(fontBatch, Integer.toString(leftScore), Gdx.graphics.getWidth()/2f - 120, Gdx.graphics.getHeight() - 50);
-        pixelFont.draw(fontBatch, Integer.toString(rightScore), Gdx.graphics.getWidth()/2f + 80, Gdx.graphics.getHeight() - 50);
+        pixelFont.draw(fontBatch, Integer.toString(leftScore), screenSize.x/2f - 120, screenSize.y - 50);
+        pixelFont.draw(fontBatch, Integer.toString(rightScore), screenSize.x/2f + 80, screenSize.y - 50);
         fontBatch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -104,30 +103,31 @@ public class ScoreUI {
             windowHeight -= 32.5f;
         }
         shapeRenderer.end();
+
+        windowHeight = screenSize.y;
     }
 
     public void resize(int width, int height) {
-        /*resizeCenterLines();
-        resizeBackButton();*/
+        extendViewport.update(width, height, true);
+        screenSize = new Vector2(extendViewport.getWorldWidth(), extendViewport.getWorldHeight());
+        windowHalfWidth = screenSize.x/2f;
+        windowHeight = screenSize.y;
         fontBatch.setProjectionMatrix(stage.getViewport().getCamera().combined);
         shapeRenderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
-        extendViewport.update(width, height, true);
-        extendViewport.apply(true);
+//        resizeShapeRendererVariables();
     }
 
-    private void resizeCenterLines() {
-        windowHalfWidth = Gdx.graphics.getWidth()/2f;
-        windowHeight = Gdx.graphics.getHeight();
-        lineWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 6f), screenSize.x);
-        lineHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 12.5f), screenSize.y);
+    private void resizeShapeRendererVariables() {
+        windowHalfWidth = screenSize.x/2f;
+        windowHeight = screenSize.y;
     }
 
     private void resizeBackButton() {
         backButtonX = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 370), screenSize.x);
         backButtonY = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, screenSize.y - 45), screenSize.y);
         backButtonPos = new Vector2(backButtonX, backButtonY);
-        backButtonWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 45), screenSize.x);
-        backButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 25), screenSize.y);
+//        backButtonWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 45), screenSize.x);
+//        backButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 25), screenSize.y);
         backButtonSize = new Vector2(backButtonWidth, backButtonHeight);
     }
 

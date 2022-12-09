@@ -95,12 +95,9 @@ public class OnePlayerPong implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		extendViewport.update(width, height, false);
-		System.out.println("Screen height after resizing: " + extendViewport.getScreenHeight());
-		System.out.println("World height after resizing: " + extendViewport.getWorldHeight());
-//		com.badlogic.gdx.math.Vector2 worldToScreenCoords = extendViewport.toScreenCoordinates(new Vector2(width, height), camera.combined);
-//		extendViewport.setScreenBounds(extendViewport.getScreenX(), extendViewport.getScreenY(), width, height);
-//		extendViewport.apply(true);
 		scoreUI.resize(width, height);
+		/*System.out.println("Screen height after resizing: " + extendViewport.getScreenHeight());
+		System.out.println("World height after resizing: " + extendViewport.getWorldHeight());*/
 	}
 
 	@Override
@@ -136,27 +133,6 @@ public class OnePlayerPong implements Screen {
 			System.out.println("Ball velocityX: " + ball.getVelocity().x);
 			System.out.println("Ball velocityY: " + ball.getVelocity().y);
 		}
-
-		if (ball.getY() > (extendViewport.getWorldHeight() - 10)  || ball.getY() <= 0) {
-			float theta = collisions.calculateDeflectionAngle(extendViewport.getWorldHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		}
-
-		/*if (collisions.isCollidingCircleRect(topBound, ball) ||
-				collisions.isCollidingCircleRect(bottomBound, ball)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		}*/
 	}
 
 	private void checkPlayerScored() {
@@ -172,47 +148,8 @@ public class OnePlayerPong implements Screen {
 	}
 
 	private void keepBallInBounds() {
-		/*if (ball.getY() >= Gdx.graphics.getHeight() - 3 || ball.getY() < 0) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		}*/
-
-		/*if (collisions.isCollidingCircleRect(new Rectangle(0, 0, Gdx.graphics.getWidth(), 1), ball) ||
-				collisions.isCollidingCircleRect(new Rectangle(0, Gdx.graphics.getHeight() - 3, Gdx.graphics.getWidth(), 1), ball)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		}*/
-
-		/*if ((ball.getY() > Gdx.graphics.getHeight() || (ball.getY() < 0)) && (ball.getVelocity().x > 0)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		} else if ((ball.getY() > Gdx.graphics.getHeight() || (ball.getY() < 0)) && (ball.getVelocity().x < 0)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		}*/
-
-		/*if (collisions.isCollidingCircleRect(topBound, ball)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight() / 2f, ball);
+		if (ball.getY() > (extendViewport.getWorldHeight() - 10)  || ball.getY() <= 0) {
+			float theta = collisions.calculateDeflectionAngle(extendViewport.getWorldHeight()/2f, ball);
 			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
 			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
 			float oldSign = Math.signum(ball.getVelocity().x);
@@ -220,36 +157,6 @@ public class OnePlayerPong implements Screen {
 			ball.setVelocityY(newBallSpeedY);
 			collisions.reset();
 		}
-
-		if (collisions.isCollidingCircleRect(bottomBound, ball)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight() / 2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		}*/
-
-		/*if ((collisions.isCollidingCircleRect(new Rectangle(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 1), ball) ||
-				collisions.isCollidingCircleRect(new Rectangle(0, 0, Gdx.graphics.getWidth(), 1), ball)) && (ball.getVelocity().x > 0)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		} else if ((collisions.isCollidingCircleRect(new Rectangle(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 1), ball) ||
-				collisions.isCollidingCircleRect(new Rectangle(0, 0, Gdx.graphics.getWidth(), 1), ball)) && ball.getVelocity().x < 0) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		}*/
 	}
 
 	private void resetBall() {
