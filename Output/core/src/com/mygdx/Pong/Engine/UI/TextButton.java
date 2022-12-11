@@ -83,7 +83,17 @@ public class TextButton extends com.badlogic.gdx.scenes.scene2d.ui.TextButton {
         this.position = new Vector2(getX(), getY());
     }
 
+    public void setPosition(com.badlogic.gdx.math.Vector2 position) {
+        super.setPosition(position.x, position.y);
+        this.position = new Vector2(getX(), getY());
+    }
+
     public void setSize(Vector2 size) {
+        super.setSize(size.x, size.y);
+        this.size = new Vector2(getWidth(), getHeight());
+    }
+
+    public void setSize(com.badlogic.gdx.math.Vector2 size) {
         super.setSize(size.x, size.y);
         this.size = new Vector2(getWidth(), getHeight());
     }

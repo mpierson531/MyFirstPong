@@ -1,5 +1,9 @@
 package com.mygdx.Pong.Engine.Shapes.Classes;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.Pong.Engine.Math.Vector2;
 import com.mygdx.Pong.Engine.Shapes.Interfaces.Shape;
 
@@ -7,15 +11,37 @@ public class Circle extends com.badlogic.gdx.math.Circle implements Shape, Clone
     private final Vector2 center;
     private float height;
 
-    private Vector2 closestPointToPlayer;
-    private Vector2 distanceToPlayer;
-    private Vector2 velocity;
+    private Vector2 closestPointToPlayer, distanceToPlayer, velocity;
 
     public Circle(float x, float y, float radius, Vector2 velocity) {
         super(x, y, radius);
         this.velocity = velocity;
         center = new Vector2(this.x, this.y);
         height = this.radius - this.x;
+    }
+
+    public boolean isTouched() {
+        // TODO: Fix
+
+        if (Gdx.input.isTouched() &&
+                (Gdx.input.getX() >= getCenterX() - getRadius() && Gdx.input.getX() <= getCenterX() + getRadius())
+                && (Gdx.input.getY() >= getCenterY() - getRadius() && Gdx.input.getY() <= getCenterY() + getRadius())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean justTouched() {
+        // TODO: Fix
+
+        if (Gdx.input.justTouched() &&
+                (Gdx.input.getX() >= getCenterX() - getRadius() && Gdx.input.getX() <= getCenterX() + getRadius())
+                && (Gdx.input.getY() >= getCenterY() - getRadius() && Gdx.input.getY() <= getCenterY() + getRadius())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Vector2 getVelocity() { return this.velocity; }

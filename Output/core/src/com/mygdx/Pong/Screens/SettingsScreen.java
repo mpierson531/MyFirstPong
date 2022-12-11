@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -61,6 +62,8 @@ public class SettingsScreen implements Screen {
         stage.addActor(soundButton);
         stage.addActor(difficultyButton);
         Gdx.input.setInputProcessor(stage);
+
+        // TODO: Add a setting for defaulting to full screen when pressing start
     }
 
     @Override
@@ -86,7 +89,7 @@ public class SettingsScreen implements Screen {
         soundButtonWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 200), screenSize.x);
         soundButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 47.5f), screenSize.y);
         soundButtonSize = new Vector2(soundButtonWidth, soundButtonHeight);
-        soundButtonPos = new Vector2(MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 92.5f), screenSize.x),
+        soundButtonPos = new Vector2(MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 120), screenSize.x),
                 MathUtils.toValue(MathUtils.toPercentage(screenSize.y, screenSize.y/2f - 20), screenSize.y));
 
         difficultyButton = new TextButton("Difficulty", _textButtonStyle, difficultyButtonPos.x, difficultyButtonPos.y,
@@ -95,6 +98,14 @@ public class SettingsScreen implements Screen {
 
         soundButton = new TextButton("Sound", _textButtonStyle, soundButtonPos.x, soundButtonPos.y, soundButtonSize.x, soundButtonSize.y);
         soundButton.getLabel().setAlignment(Align.center, Align.center);
+
+        soundButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent inputEvent, float x, float y) {
+                _game.setScreen(new SoundScreen(_game, artist2D, _spriteBatch,
+                        constants, fileHandler, jsonHandler));
+            }
+        });
 
         difficultyButton.addListener(new ClickListener() {
             @Override
@@ -138,7 +149,7 @@ public class SettingsScreen implements Screen {
         soundButtonWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 200), screenSize.x);
         soundButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 47.5f), screenSize.y);
         soundButtonSize = new Vector2(soundButtonWidth, soundButtonHeight);
-        soundButtonPos = new Vector2(MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 92.5f), screenSize.x),
+        soundButtonPos = new Vector2(MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 120), screenSize.x),
                 MathUtils.toValue(MathUtils.toPercentage(screenSize.y, screenSize.y/2f - 20), screenSize.y));
         soundButton.setPosition(soundButtonPos.x, soundButtonPos.y);
         soundButton.setSize(soundButtonSize.x, soundButtonSize.y);

@@ -1,5 +1,6 @@
 package com.mygdx.Pong.Engine.Shapes.Classes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.Pong.Engine.Shapes.Interfaces.Shape;
 
@@ -11,6 +12,7 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Shape 
     private final float centerX;
     private final float centerY;
     private final Vector2 center;
+
     public Rectangle(float x, float y, float width, float height) {
         super(x, y, width, height);
 
@@ -25,6 +27,19 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Shape 
         this.centerX = x + width/2;
         this.centerY = y + height/2;
         this.center = new Vector2(this.centerX, this.centerY);
+    }
+    
+    public boolean isTouched() {
+        return (Gdx.input.isTouched()) &&
+                (Gdx.input.getX() >= this.getX()) && (Gdx.input.getX() <= this.getMaxX())
+                && (Gdx.input.getY() <= this.getY() && Gdx.input.getY() >= this.getY() - getHeight());
+                /*&& (Gdx.input.getY() >= this.getY()) && (Gdx.input.getY() <= this.getMaxY());*/
+    }
+
+    public boolean justTouched() {
+        return (Gdx.input.justTouched()) &&
+                (Gdx.input.getX() >= this.getX()) && (Gdx.input.getX() <= this.getMaxX())
+                && (Gdx.input.getY() <= getY()) && (Gdx.input.getY() >= this.getY() - getHeight());
     }
 
     public Vector2 getPosition() { return new Vector2(x, y); }

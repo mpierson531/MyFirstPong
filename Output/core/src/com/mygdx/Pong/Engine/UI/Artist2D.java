@@ -4,10 +4,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.Pong.Engine.Math.Vector2;
+import com.mygdx.Pong.Engine.Shapes.Classes.Circle;
+import com.mygdx.Pong.Engine.Shapes.Classes.Rectangle;
 import com.mygdx.Pong.Engine.Shapes.Interfaces.Shape;
 
 public class Artist2D {
@@ -32,11 +36,32 @@ public class Artist2D {
         this.shapeRenderer = new ShapeRenderer();
     }
 
+    public void begin() {
+        shapeRenderer.begin();
+    }
+
+    public void end() {
+        shapeRenderer.end();
+    }
+
     public void drawLineRectangle(float x, float y, float width, float height, Color color) {
         shapeRenderer.setColor(color);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(x, y, width, height);
         shapeRenderer.end();
+    }
+
+    public void drawLineRectangle(Shape shape, Color color) {
+        shapeRenderer.setColor(color);
+        if (shape instanceof Rectangle) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+            shapeRenderer.end();
+
+        } else if (shape instanceof Circle) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.circle(shape.getX(), shape.getY(), ((Circle) shape).getRadius());
+        }
     }
 
     public void drawLineRectangle(Actor actor, Color color) {
@@ -53,6 +78,19 @@ public class Artist2D {
         shapeRenderer.end();
     }
 
+    public void drawFilledRectangle(Shape shape, Color color) {
+        shapeRenderer.setColor(color);
+        if (shape instanceof Rectangle) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+            shapeRenderer.end();
+
+        } else if (shape instanceof Circle) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.circle(shape.getX(), shape.getY(), ((Circle) shape).getRadius());
+        }
+    }
+
     public void drawFilledRectangle(Actor actor, Color color) {
         shapeRenderer.setColor(color);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -60,7 +98,17 @@ public class Artist2D {
         shapeRenderer.end();
     }
 
-    public void batchDrawFilledRects(Actor[] actors, Color color) {
+    public void batchDrawFilledRects(Array<Shape> shapes, Color color) {
+        shapeRenderer.setColor(color);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (Shape shape : shapes) {
+            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+        }
+        shapeRenderer.end();
+    }
+
+    public void batchDrawFilledRectActor(Array<Actor> actors, Color color) {
         shapeRenderer.setColor(color);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -70,10 +118,55 @@ public class Artist2D {
         shapeRenderer.end();
     }
 
-    public void batchDrawFilledRects(Shape[] shapes, Color color) {
+    public void batchDrawFilledRectActor(Actor[] actors, Color color) {
         shapeRenderer.setColor(color);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (Actor actor : actors) {
+            shapeRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
+        }
+        shapeRenderer.end();
+    }
+
+    public void batchDrawFilledRectActor(Shape[] shapes, Color color) {
+        shapeRenderer.setColor(color);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (Shape shape : shapes) {
+            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+        }
+        shapeRenderer.end();
+    }
+
+    public void batchDrawLineRectangles(Array<Shape> shapes, Color color) {
+            shapeRenderer.setColor(color);
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            for (Shape shape : shapes) {
+                if (shape instanceof Rectangle) {
+                    shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+                } else if (shape instanceof Circle) {
+                    shapeRenderer.circle(shape.getX(), shape.getY(), ((Circle) shape).getRadius());
+                }
+            }
+            shapeRenderer.end();
+
+    }
+
+    public void batchDrawLineRectActors(Array<Actor> actors, Color color) {
+        shapeRenderer.setColor(color);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (Actor actor : actors) {
+            shapeRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
+        }
+        shapeRenderer.end();
+    }
+
+    public void batchDrawLineRects(Array<Rectangle> shapes, Color color) {
+        shapeRenderer.setColor(color);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         for (Shape shape : shapes) {
             shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
         }

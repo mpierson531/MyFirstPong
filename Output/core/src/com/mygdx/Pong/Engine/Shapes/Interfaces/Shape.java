@@ -1,5 +1,6 @@
 package com.mygdx.Pong.Engine.Shapes.Interfaces;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.math.Vector2;
 
@@ -13,4 +14,6 @@ public interface Shape extends Shape2D, Serializable, Cloneable {
     float getCenterX();
     float getCenterY();
     Vector2 getCenter();
+    boolean isTouched();
+    boolean justTouched();
 }

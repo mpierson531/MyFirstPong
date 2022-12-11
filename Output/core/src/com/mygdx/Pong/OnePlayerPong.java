@@ -26,7 +26,6 @@ public class OnePlayerPong implements Screen {
 	private Circle ballClone;
 	private Game game;
 	private ExtendViewport extendViewport;
-	private Rectangle topBound, bottomBound;
 
 	public OnePlayerPong(Game game) {
 		this.game = game;
@@ -41,10 +40,9 @@ public class OnePlayerPong implements Screen {
 		// Shape inheritor initialization
 		playerOne = new Player(50f, 50f, 30f, 100f);
 		comPlayer = new ComPlayer();
-		ball = new Circle(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 10f, new Vector2(-Constants.MAX_BALL_SPEED, 10));
+		ball = new Circle(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 10f,
+				new Vector2(-Constants.MAX_BALL_SPEED, 10));
 		ballClone = ball.clone();
-		topBound = new Rectangle(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), 2);
-		bottomBound = new Rectangle(0, 0, Gdx.graphics.getWidth(), 2);
 
 		scoreUI = new ScoreUI(this.game, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
@@ -69,9 +67,7 @@ public class OnePlayerPong implements Screen {
 				playerOne.getRectangle().getHeight());
 		shapeRenderer.rect(comPlayer.getRectangle().getX(), comPlayer.getRectangle().getY(), comPlayer.getRectangle().getWidth(),
 				comPlayer.getRectangle().getHeight());
-		shapeRenderer.circle(ball.x, ball.y, ball.radius);
-//		shapeRenderer.rect(topBound.getX(), topBound.getY(), topBound.getWidth(), topBound.getHeight());
-//		shapeRenderer.rect(bottomBound.getX(), bottomBound.getY(), bottomBound.getWidth(), bottomBound.getHeight());
+		shapeRenderer.circle(ball.getX(), ball.getY(), ball.getRadius());
 		shapeRenderer.end();
 
 		shapeRenderer.setColor(Color.RED);
@@ -148,7 +144,7 @@ public class OnePlayerPong implements Screen {
 	}
 
 	private void keepBallInBounds() {
-		if (ball.getY() > (extendViewport.getWorldHeight() - 10)  || ball.getY() <= 0) {
+		if (ball.getY() > (extendViewport.getWorldHeight() - 5)  || ball.getY() <= 0) {
 			float theta = collisions.calculateDeflectionAngle(extendViewport.getWorldHeight()/2f, ball);
 			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
 			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
@@ -161,7 +157,6 @@ public class OnePlayerPong implements Screen {
 
 	private void resetBall() {
 		ball.setCenter(Constants.CENTER_SCREEN);
-
 		float randomX = MathUtils.random(0, 1);
 		ball.setVelocityX((randomX == 0) ? -Constants.MAX_BALL_SPEED : Constants.MAX_BALL_SPEED);
 		ball.setVelocityY(10);

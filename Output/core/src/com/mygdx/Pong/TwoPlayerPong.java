@@ -28,15 +28,17 @@ public class TwoPlayerPong implements Screen {
 		this.game = game;
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
-		extendViewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		extendViewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+				0, Gdx.graphics.getHeight(), camera);
 
 		shapeRenderer = new ShapeRenderer();
 
 		// Shape inheritor initialization
 		playerOne = new Player(50f, 50f, 30f, 100f);
 		playerTwo = new Player(Gdx.graphics.getWidth() - 50, 50, 30f, 100f);
-		ball = new Circle(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 10f, new Vector2(-Constants.MAX_BALL_SPEED, 10));
+		ball = new Circle(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 10f,
+				new Vector2(-Constants.MAX_BALL_SPEED, 10));
 
 		scoreUI = new ScoreUI(this.game, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
 
@@ -45,22 +47,26 @@ public class TwoPlayerPong implements Screen {
 
 	@Override
 	public void render(float delta) {
-		ScreenUtils.clear(0,0,0,1);
+		ScreenUtils.clear(0, 0, 0, 1);
+//		extendViewport.apply(true);
+		camera.update(true);
+
+		scoreUI.drawScores(playerOne.getScore(), playerTwo.getScore(), camera);
+		scoreUI.act(Gdx.graphics.getDeltaTime());
+		scoreUI.draw();
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		shapeRenderer.setColor(Color.WHITE);
 
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-		shapeRenderer.rect(playerOne.getRectangle().getX(), playerOne.getRectangle().getY(), playerOne.getRectangle().getWidth(), playerOne.getRectangle().getHeight());
-		shapeRenderer.rect(playerTwo.getRectangle().getX(), playerTwo.getRectangle().getY(), playerTwo.getRectangle().getWidth(), playerTwo.getRectangle().getHeight());
-		shapeRenderer.circle(ball.x, ball.y, ball.radius);
-
+		shapeRenderer.rect(playerOne.getRectangle().getX(), playerOne.getRectangle().getY(), playerOne.getRectangle().getWidth(),
+				playerOne.getRectangle().getHeight());
+		shapeRenderer.rect(playerTwo.getRectangle().getX(), playerTwo.getRectangle().getY(), playerTwo.getRectangle().getWidth(),
+				playerTwo.getRectangle().getHeight());
+		shapeRenderer.circle(ball.getX(), ball.getY(), ball.getRadius());
 		shapeRenderer.end();
 
-		scoreUI.drawScores(playerOne.getScore(), playerTwo.getScore(), camera);
-		scoreUI.act(Gdx.graphics.getDeltaTime());
-		scoreUI.draw();
+		shapeRenderer.setColor(Color.RED);
 
 //		scoreUI.getStage().act(Gdx.graphics.getDeltaTime());
 
@@ -80,11 +86,10 @@ public class TwoPlayerPong implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-		System.out.println("Screen height after resizing: " + extendViewport.getScreenHeight());
-		System.out.println("World height after resizing: " + extendViewport.getWorldHeight());
-		extendViewport.update(width, height, true);
-//		extendViewport.apply(true);
+		extendViewport.update(width, height, false);
 		scoreUI.resize(width, height);
+		/*System.out.println("Screen height after resizing: " + extendViewport.getScreenHeight());
+		System.out.println("World height after resizing: " + extendViewport.getWorldHeight());*/
 	}
 
 	@Override
@@ -138,28 +143,20 @@ public class TwoPlayerPong implements Screen {
 	}
 
 	private void checkPlayerScored() {
-		if (ball.getX() > Gdx.graphics.getWidth() + 2.5f) {
+		if (ball.getX() > Constants.RIGHT_GOAL_X) {
 			playerOne.updateScore(1);
 			resetBall();
 		}
 
-		if (ball.getX() < 0 - 2.5f) {
+		if (ball.getX() < Constants.LEFT_GOAL_X) {
 			playerTwo.updateScore(1);
 			resetBall();
 		}
 	}
 
 	private void keepBallInBounds() {
-		if ((ball.getY() > Gdx.graphics.getHeight() || (ball.getY() < 0)) && (ball.getVelocity().x > 0)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
-			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
-			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
-			float oldSign = Math.signum(ball.getVelocity().x);
-			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
-			ball.setVelocityY(newBallSpeedY);
-			collisions.reset();
-		} else if ((ball.getY() > Gdx.graphics.getHeight() || (ball.getY() < 0)) && (ball.getVelocity().x < 0)) {
-			float theta = collisions.calculateDeflectionAngle(Gdx.graphics.getHeight()/2f, ball);
+		if (ball.getY() > (extendViewport.getWorldHeight() - 5) || ball.getY() <= 0) {
+			float theta = collisions.calculateDeflectionAngle(extendViewport.getWorldHeight()/2f, ball);
 			float newBallSpeedX = Math.abs((MathUtils.cos(theta)) * Constants.MAX_BALL_SPEED);
 			float newBallSpeedY = -(MathUtils.sin(theta) * -Constants.MAX_BALL_SPEED);
 			float oldSign = Math.signum(ball.getVelocity().x);
@@ -170,7 +167,7 @@ public class TwoPlayerPong implements Screen {
 	}
 
 	private void resetBall() {
-		ball.setCenter(new Vector2(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f));
+		ball.setCenter(Constants.CENTER_SCREEN);
 
 		float randomX = MathUtils.random(0, 1);
 		ball.setVelocityX((randomX == 0) ? -Constants.MAX_BALL_SPEED : Constants.MAX_BALL_SPEED);

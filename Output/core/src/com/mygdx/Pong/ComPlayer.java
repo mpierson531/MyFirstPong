@@ -1,6 +1,7 @@
 package com.mygdx.Pong;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.Pong.Engine.Shapes.Classes.Circle;
 import com.mygdx.Pong.Engine.Shapes.Classes.Rectangle;

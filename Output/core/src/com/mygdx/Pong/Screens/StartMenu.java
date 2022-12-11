@@ -21,11 +21,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.Pong.Constants;
 import com.mygdx.Pong.Engine.Files.FileHandler;
 import com.mygdx.Pong.Engine.Json.JsonHandler;
+import com.mygdx.Pong.Engine.Math.Vector2;
 import com.mygdx.Pong.Engine.UI.Artist2D;
 import com.mygdx.Pong.Engine.UI.TextButton;
 import com.mygdx.Pong.OnePlayerPong;
 import com.mygdx.Pong.TwoPlayerPong;
-import com.mygdx.Pong.Engine.Math.Vector2;
 
 import static com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
@@ -37,12 +37,6 @@ public class StartMenu implements Screen {
     private final BitmapFont pixelLabelFont;
     private final Game game;
     private final SpriteBatch spriteBatch;
-    private final Vector2 startButtonBorderPos;
-    private final float startButtonBorderWidth, startButtonBorderHeight;
-    private final Vector2 twoPlayerBorderPos;
-    private final float twoPlayerBorderWidth, twoPlayerBorderHeight;
-    private final Vector2 settingsBorderPos;
-    private final float settingsBorderWidth, settingsBorderHeight;
     private TextButtonStyle textButtonStyle;
     private Artist2D artist2D;
     private JsonHandler jsonHandler;
@@ -52,24 +46,14 @@ public class StartMenu implements Screen {
     public StartMenu(final Game game) {
         this.game = game;
 
+        stage = new Stage(new ScreenViewport());
+
         jsonHandler = new JsonHandler();
         fileHandler = new FileHandler(Gdx.files.local("configFile.json").toString());
 
         artist2D = new Artist2D();
 
         constants = new Constants();
-
-        startButtonBorderWidth = 177;
-        startButtonBorderHeight = 47.5f;
-        startButtonBorderPos = new Vector2(Gdx.graphics.getWidth()/2f - 105, Gdx.graphics.getHeight() - 280.5f);
-
-        twoPlayerBorderWidth = 200;
-        twoPlayerBorderHeight = 47.5f;
-        twoPlayerBorderPos = new Vector2(Gdx.graphics.getWidth()/2f - 117.5f, Gdx.graphics.getHeight() - 346);
-
-        settingsBorderWidth = 200;
-        settingsBorderHeight = 47.5f;
-        settingsBorderPos = new Vector2(Gdx.graphics.getWidth()/2f - 117.5f, Gdx.graphics.getHeight() - 411.5f);
 
         spriteBatch = new SpriteBatch();
 
@@ -140,7 +124,6 @@ public class StartMenu implements Screen {
     }
 
     private void setupStage() {
-        stage = new Stage(new ScreenViewport());
         stage.addActor(titleLabel);
         stage.addActor(startButton);
         stage.addActor(twoPlayerButton);
@@ -230,8 +213,8 @@ public class StartMenu implements Screen {
     }
 
     private void drawButtonBordersOnHover() {
-        startButton.drawBorderOnHover(artist2D, startButtonBorderPos, startButtonBorderWidth, startButtonBorderHeight, Color.WHITE);
-        twoPlayerButton.drawBorderOnHover(artist2D, twoPlayerBorderPos, twoPlayerBorderWidth, twoPlayerBorderHeight, Color.WHITE);
-        settingsButton.drawBorderOnHover(artist2D, settingsBorderPos, settingsBorderWidth, settingsBorderHeight, Color.WHITE);
+        startButton.drawBorderOnHover(artist2D, Color.WHITE);
+        twoPlayerButton.drawBorderOnHover(artist2D, Color.WHITE);
+        settingsButton.drawBorderOnHover(artist2D, Color.WHITE);
     }
 }
