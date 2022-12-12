@@ -19,6 +19,8 @@ public class Constants {
     public static float UPPER_BOUNDS_Y = Gdx.graphics.getHeight() - 4.2f;
     public static float LOWER_BOUNDS_Y = 0 + 4.2f;
     public static Vector2 CENTER_SCREEN = new Vector2(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f);
+    public static float VOLUME = 100;
+    public static boolean MUTE = false;
 
     public float maxBallSpeed = 425f;
     public float maxBallAngle = 45f;
@@ -30,6 +32,8 @@ public class Constants {
     public float upperBoundsY = Gdx.graphics.getHeight() - 4.2f;
     public float lowerBoundsY = 0 + 4.2f;
     public Vector2 centerScreen = new Vector2(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f);
+    public float volume = 100;
+    public boolean mute = false;
 
     public Constants() {
         maxBallSpeed = 425f;
@@ -45,6 +49,8 @@ public class Constants {
         if (centerScreen == null) {
             centerScreen = new Vector2(Constants.CENTER_SCREEN);
         }
+        volume = 100;
+        MUTE = false;
     }
 
     public void setStaticFieldsToInstanceFields() {
@@ -58,6 +64,8 @@ public class Constants {
         UPPER_BOUNDS_Y = this.upperBoundsY;
         LOWER_BOUNDS_Y = this.lowerBoundsY;
         CENTER_SCREEN = this.centerScreen;
+        VOLUME = this.volume;
+        MUTE = this.mute;
     }
 
     public void setMaxBallSpeed(float speed) {
@@ -78,5 +86,12 @@ public class Constants {
 
     public void setComPlayerSpeedMultiplier(float speed) {
         comPlayerSpeedMultiplier = speed;
+    }
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    public void setMute(boolean mute) {
+        this.mute = mute;
     }
 }

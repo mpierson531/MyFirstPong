@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -102,8 +101,8 @@ public class SettingsScreen implements Screen {
         soundButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
-                _game.setScreen(new SoundScreen(_game, artist2D, _spriteBatch,
-                        constants, fileHandler, jsonHandler));
+                _game.setScreen(new SoundScreen(_game, _textButtonStyle, artist2D, _spriteBatch,
+                        constants, fileHandler, jsonHandler, soundButton.getStyle().font));
             }
         });
 

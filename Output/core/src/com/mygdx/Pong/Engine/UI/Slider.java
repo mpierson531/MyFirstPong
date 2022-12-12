@@ -65,7 +65,6 @@ public class Slider {
 
     public void draw(Artist2D artist2D, Color color) {
         checkForInput(artist2D);
-        artist2D.batchDrawFilledRects(steps, color);
         artist2D.batchDrawLineRectangles(tempSteps, color);
         for (int i = 0; i < getMax(); i++) {
             if (stepsOn.get(i)) {
@@ -77,24 +76,22 @@ public class Slider {
     }
 
     private void checkForInput(Artist2D artist2D) {
-        float rectangleIndex;
-
         for (int i = 0; i < steps.size; i++) {
             if (tempSteps.get(i).justTouched()) {
-                rectangleIndex = i;
-                System.out.println(rectangleIndex);
-                if (rectangleIndex < 0 || rectangleIndex >= getMax() / getStepValue()) {
+                i = i;
+                if (i < 0 || i >= getMax() / getStepValue()) {
                     return;
                 }
 
-                if (!stepsOn.get((int) rectangleIndex)) {
-                    for (int j = 0; j <= rectangleIndex; j++) {
+                if (!stepsOn.get(i)) {
+                    for (int j = 0; j <= i; j++) {
                         stepsOn.set(j, true);
+                        setValue(getValue() + getStepValue());
                     }
                 } else {
-                    // Otherwise, turn it and all rectangles after it off.
-                    for (int j = (int) rectangleIndex; j < (getMax() / getStepValue()); j++) {
+                    for (int j = i; j < (getMax() / getStepValue()); j++) {
                         stepsOn.set(j, false);
+                        setValue(getValue() - getStepValue());
                     }
                 }
 
@@ -107,7 +104,7 @@ public class Slider {
 //                steps.set(i, tempSteps.get(i));
 //                tempSteps.set(i, new Rectangle(0,0,0,0));
             } /*else if (steps.get(i).justTouched()) {
-                rectangleIndex = (Gdx.input.getX() / (tempSteps.get(i).getWidth() + (getWidth() / max)));
+                i = (Gdx.input.getX() / (tempSteps.get(i).getWidth() + (getWidth() / max)));
                 *//*for (float j = getValue(); j > getMin() - 1; j--) {
                     if (j == i) break;
                     setValue(getValue() - getStepValue());
@@ -180,7 +177,7 @@ public class Slider {
         return this.value;
     }
 
-    private void setValue(float value) {
+    public void setValue(float value) {
         this.value = value;
     }
 

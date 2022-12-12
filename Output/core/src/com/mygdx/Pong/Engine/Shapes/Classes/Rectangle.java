@@ -30,16 +30,19 @@ public class Rectangle extends com.badlogic.gdx.math.Rectangle implements Shape 
     }
     
     public boolean isTouched() {
-        return (Gdx.input.isTouched()) &&
-                (Gdx.input.getX() >= this.getX()) && (Gdx.input.getX() <= this.getMaxX())
-                && (Gdx.input.getY() <= this.getY() && Gdx.input.getY() >= this.getY() - getHeight());
-                /*&& (Gdx.input.getY() >= this.getY()) && (Gdx.input.getY() <= this.getMaxY());*/
+        return (Gdx.input.isTouched())
+                && (Gdx.input.getX() >= this.getX())
+                && (Gdx.input.getX() <= this.getMaxX())
+                && (Gdx.graphics.getHeight() - Gdx.input.getY() >= getY())
+                && (Gdx.graphics.getHeight() - Gdx.input.getY() <= getY() + getHeight());
     }
 
     public boolean justTouched() {
-        return (Gdx.input.justTouched()) &&
-                (Gdx.input.getX() >= this.getX()) && (Gdx.input.getX() <= this.getMaxX())
-                && (Gdx.input.getY() <= getY()) && (Gdx.input.getY() >= this.getY() - getHeight());
+        return (Gdx.input.justTouched())
+                && (Gdx.input.getX() >= this.getX())
+                && (Gdx.input.getX() <= this.getMaxX())
+                && (Gdx.graphics.getHeight() - Gdx.input.getY() >= getY())
+                && (Gdx.graphics.getHeight() - Gdx.input.getY() <= getY() + getHeight());
     }
 
     public Vector2 getPosition() { return new Vector2(x, y); }

@@ -25,9 +25,11 @@ public class CheckBox extends com.badlogic.gdx.scenes.scene2d.ui.CheckBox {
 
     public CheckBox(String text, CheckBoxStyle style, float x, float y, float width, float height, Color color) {
         super(text, style);
+        setPosition(x, y);
         setSize(width, height);
-        setWidth(width); setHeight(height);
-        setColor(color);
+        setStyle(style);
+        if (color != null)
+            setColor(color);
     }
 
     public CheckBox(String text, CheckBoxStyle style, Vector2 position, float width, float height) {
@@ -37,10 +39,15 @@ public class CheckBox extends com.badlogic.gdx.scenes.scene2d.ui.CheckBox {
     }
 
     public CheckBox(String text, CheckBoxStyle style, Vector2 position, float width, float height, Color color) {
-        super(text, style);
-        setPosition(position.x, position.y);
-        setSize(width, height);
-        setColor(color);
+        this(text, style, position.x, position.y, width, height, color);
+    }
+
+    public CheckBox(String text, CheckBoxStyle style, Vector2 position, Vector2 size) {
+        this(text, style, position, size, null);
+    }
+
+    public CheckBox(String text, CheckBoxStyle style, Vector2 position, Vector2 size, Color color) {
+        this(text, style, position.x, position.y, size.x, size.y, color);
     }
 
     public void drawLineRectBackground(Artist2D artist2D, Color color) {
