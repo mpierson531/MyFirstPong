@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.Pong.Constants;
 import com.mygdx.Pong.Engine.Files.FileHandler;
 import com.mygdx.Pong.Engine.Json.JsonHandler;
-import com.mygdx.Pong.Engine.Math.Vector2;
 import com.mygdx.Pong.Engine.UI.Artist2D;
 import com.mygdx.Pong.Engine.UI.TextButton;
 import com.mygdx.Pong.OnePlayerPong;
@@ -42,14 +41,17 @@ public class StartMenu implements Screen {
     private JsonHandler jsonHandler;
     private FileHandler fileHandler;
     private Constants constants;
+    private Color buttonPressColor;
 
     public StartMenu(final Game game) {
         this.game = game;
 
+        buttonPressColor = new Color(0.8f, 0.8f, 0.8f, 1);
+
         stage = new Stage(new ScreenViewport());
 
         jsonHandler = new JsonHandler();
-        fileHandler = new FileHandler(Gdx.files.local("configFile.json").toString());
+        fileHandler = new FileHandler(Gdx.files.internal("configFile.json").toString());
 
         artist2D = new Artist2D();
 
@@ -84,7 +86,7 @@ public class StartMenu implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
-        drawButtonBordersOnHover();
+        drawButtonStyles();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
@@ -118,8 +120,6 @@ public class StartMenu implements Screen {
 
     @Override
     public void dispose() {
-        pixelLabelFont.dispose();
-        pixelButtonFont.dispose();
         stage.dispose();
     }
 
@@ -173,48 +173,68 @@ public class StartMenu implements Screen {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                    if (!fileHandler.fileExists()) {
-                        fileHandler.createFile();
-                        jsonHandler.serialize(constants, fileHandler.getFile());
+                    if (!StartMenu.this.fileHandler.fileExists()) {
+                        StartMenu.this.fileHandler.createFile();
+                        StartMenu.this.jsonHandler.serialize(StartMenu.this.constants, StartMenu.this.fileHandler.getFile());
+                        StartMenu.this.constants.setStaticFieldsToInstanceFields();
                     } else {
-                        constants = (Constants) jsonHandler.deserialize(fileHandler.getFile(), constants);
-                        constants.setStaticFieldsToInstanceFields();
+                        StartMenu.this.constants = (Constants) jsonHandler.deserialize(fileHandler.getFile(), StartMenu.this.constants);
+                        StartMenu.this.constants.setStaticFieldsToInstanceFields();
                     }
 
-                game.setScreen(new OnePlayerPong(game));
-                dispose();
+                StartMenu.this.game.setScreen(new OnePlayerPong(StartMenu.this.game));
+                StartMenu.this.dispose();
             }
         });
 
         twoPlayerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new TwoPlayerPong(game));
-                dispose();
+                StartMenu.this.game.setScreen(new TwoPlayerPong(StartMenu.this.game));
+                StartMenu.this.dispose();
             }
         });
 
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!fileHandler.fileExists()) {
-                    fileHandler.createFile();
-                    jsonHandler.serialize(constants, fileHandler.getFile());
-                    constants.setStaticFieldsToInstanceFields();
+                if (!StartMenu.this.fileHandler.fileExists()) {
+                    StartMenu.this.fileHandler.createFile();
+                    StartMenu.this.jsonHandler.serialize(StartMenu.this.constants, StartMenu.this.fileHandler.getFile());
+                    StartMenu.this.constants.setStaticFieldsToInstanceFields();
                 } else {
-                    constants = (Constants) jsonHandler.deserialize(fileHandler.getFile(), constants);
-                    constants.setStaticFieldsToInstanceFields();
+                    StartMenu.this.constants = (Constants) jsonHandler.deserialize(StartMenu.this.fileHandler.getFile(), StartMenu.this.constants);
+                    StartMenu.this.constants.setStaticFieldsToInstanceFields();
                 }
 
-                game.setScreen(new SettingsScreen(game, artist2D, textButtonStyle, spriteBatch, constants, fileHandler, jsonHandler));
-                hide();
+                StartMenu.this.game.setScreen(new SettingsScreen(StartMenu.this.game,
+                        StartMenu.this.artist2D,
+                        StartMenu.this.textButtonStyle,
+                        StartMenu.this.spriteBatch,
+                        StartMenu.this.constants,
+                        StartMenu.this.fileHandler,
+                        StartMenu.this.jsonHandler,
+                        StartMenu.this.buttonPressColor));
+                StartMenu.this.dispose();
             }
         });
     }
 
-    private void drawButtonBordersOnHover() {
+    private void drawButtonStyles() {
         startButton.drawBorderOnHover(artist2D, Color.WHITE);
         twoPlayerButton.drawBorderOnHover(artist2D, Color.WHITE);
         settingsButton.drawBorderOnHover(artist2D, Color.WHITE);
+
+        if (startButton.isPressed()) {
+            artist2D.drawFilledActor(startButton, buttonPressColor);
+        }
+
+        if (twoPlayerButton.isPressed()) {
+            artist2D.drawFilledActor(twoPlayerButton, buttonPressColor);
+        }
+
+        if (settingsButton.isPressed()) {
+            artist2D.drawFilledActor(settingsButton, buttonPressColor);
+        }
     }
 }

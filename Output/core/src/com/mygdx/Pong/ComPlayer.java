@@ -27,7 +27,6 @@ public class ComPlayer {
             movementDistance = (MathUtils.clamp(distanceToCover - offset,
                     -Constants.COM_PLAYER_SPEED, Constants.COM_PLAYER_SPEED)) * Constants.COM_PLAYER_SPEED_MULTIPLIER;
             playerRect.y += movementDistance;
-//            System.out.println(movementDistance);
         }
     }
 

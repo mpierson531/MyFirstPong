@@ -65,14 +65,14 @@ public class FileHandler {
 
     public void createFile() {
         try {
-            Gdx.files.local(file.getName()).writeString("", false);
+            Gdx.files.internal(file.getName()).writeString("", false);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public void createFile(String fileName) {
-        Gdx.files.local(fileName).writeString("", false);
+        Gdx.files.internal(fileName).writeString("", false);
     }
 
     public boolean fileExists() {

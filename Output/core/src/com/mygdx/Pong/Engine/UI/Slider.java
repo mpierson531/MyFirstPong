@@ -1,29 +1,30 @@
 package com.mygdx.Pong.Engine.UI;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.mygdx.Pong.Engine.Math.Vector2;
 import com.mygdx.Pong.Engine.Shapes.Classes.Circle;
 import com.mygdx.Pong.Engine.Shapes.Classes.Rectangle;
 import com.mygdx.Pong.Engine.Shapes.Interfaces.Shape;
 
 public class Slider {
-    private Shape stepShape;
-    private Array<Shape> steps, tempSteps;
+    private Array<Shape> steps;
     private Array<Boolean> stepsOn;
     private float min, max, stepValue;
     private boolean isVertical;
     private Vector2 position, size;
     private float value;
+    private int numOfSteps;
+    private int currentStep;
 
     public Slider(float min, float max, float stepValue, boolean isVertical, Shape stepShape) {
-        this(min, max, stepValue, isVertical, null, null, stepShape, 5);
+        this(min, max, stepValue, isVertical, new Vector2(0, 0), new Vector2(0, 0), stepShape, 5);
     }
 
     public Slider(float min, float max, boolean isVertical) {
-        this(min, max, 1, isVertical, null, null, null, 5);
+        this(min, max, 1, isVertical, new Vector2(0, 0), new Vector2(0, 0), null, 5);
     }
 
     public Slider(float min, float max, float stepValue, boolean isVertical, Vector2 position, Vector2 size, Shape stepShape, float widthBetweenSteps) {
@@ -33,144 +34,74 @@ public class Slider {
         this.isVertical = isVertical;
         this.position = position;
         this.size = size;
-        this.stepShape = stepShape;
         this.value = 0;
+        this.numOfSteps = (int) (getMax()/getStepValue());
+        this.currentStep = 0;
 
         steps = new Array<>();
-        tempSteps = new Array<>();
         stepsOn = new Array<>();
 
         float increasingXPos = position.x;
 
-        if (stepShape instanceof Rectangle) {
-            for (int i = 0; i < max; i++) {
-                tempSteps.add(new Rectangle(increasingXPos, stepShape.getY(), stepShape.getWidth(), stepShape.getHeight()));
-                stepsOn.add(false);
-                steps.add(new Rectangle(0, 0, 0,0));
-                increasingXPos += widthBetweenSteps;
-            }
-        } else if (stepShape instanceof Circle) {
-            for (int i = 0; i < max; i++) {
-                tempSteps.add(new Circle(increasingXPos, stepShape.getY(), ((Circle) stepShape).getRadius(), null));
-                steps.add(new Rectangle(0, 0,0,0));
-                stepsOn.add(false);
-                increasingXPos += widthBetweenSteps;
+        if (stepShape != null) {
+            if (stepShape instanceof Rectangle) {
+                for (int i = 0; i < max / stepValue; i++) {
+                    steps.add(new Rectangle(increasingXPos, stepShape.getY(), stepShape.getWidth(), stepShape.getHeight()));
+                    stepsOn.add(false);
+                    increasingXPos += widthBetweenSteps;
+                }
+            } else if (stepShape instanceof Circle) {
+                for (int i = 0; i < max / stepValue; i++) {
+                    steps.add(new Circle(increasingXPos, stepShape.getY(), ((Circle) stepShape).getRadius(), null));
+                    stepsOn.add(false);
+                    increasingXPos += widthBetweenSteps;
+                }
             }
         }
     }
 
     public Slider(float min, float max, float stepValue, boolean isVertical, Vector2 position, Vector2 size, Shape stepShape) {
-        this(min, max, stepValue, isVertical, position, size, stepShape, size.x/max);
+        this(min, max, stepValue, isVertical, position, size, stepShape, size.x / (max / stepValue));
     }
 
     public void draw(Artist2D artist2D, Color color) {
-        checkForInput(artist2D);
-        artist2D.batchDrawLineRectangles(tempSteps, color);
-        for (int i = 0; i < getMax(); i++) {
+        checkForInput();
+        artist2D.batchDrawLineRectangles(steps, color);
+        for (int i = 0; i < getNumOfSteps(); i++) {
             if (stepsOn.get(i)) {
-                artist2D.drawFilledRectangle(tempSteps.get(i), color);
+                artist2D.drawFilledRect(steps.get(i), color);
             } else {
-                artist2D.drawLineRectangle(tempSteps.get(i), color);
+                artist2D.drawLineRect(steps.get(i), color);
             }
         }
     }
 
-    private void checkForInput(Artist2D artist2D) {
-        for (int i = 0; i < steps.size; i++) {
-            if (tempSteps.get(i).justTouched()) {
-                i = i;
-                if (i < 0 || i >= getMax() / getStepValue()) {
+    private void checkForInput() {
+        System.out.println("Current step: " + getCurrentStep());
+        for (int i = 0; i < getNumOfSteps(); i++) {
+            if (steps.get(i).justTouched()) {
+                if (i >= getNumOfSteps()) {
                     return;
                 }
 
                 if (!stepsOn.get(i)) {
+                    currentStep = i;
                     for (int j = 0; j <= i; j++) {
                         stepsOn.set(j, true);
-                        setValue(getValue() + getStepValue());
+                        if (value + getStepValue() > getMax()) {
+                            setValue(getMax());
+                        } else {
+                            setValue(value + getStepValue());
+                        }
                     }
                 } else {
-                    for (int j = i; j < (getMax() / getStepValue()); j++) {
+                    for (int j = i; j < getNumOfSteps(); j++) {
                         stepsOn.set(j, false);
-                        setValue(getValue() - getStepValue());
+                        setValue(Math.max(getMin(), (int) (value - getStepValue())));
                     }
                 }
-
-                /*for (int j = 0; j < getValue() + 1; j++) {
-                    if (j == i) break;
-                    setValue(getValue() + getStepValue());
-                    steps.set(j, tempSteps.get(j));
-                }*/
-//                setValue(getValue() + getStepValue());
-//                steps.set(i, tempSteps.get(i));
-//                tempSteps.set(i, new Rectangle(0,0,0,0));
-            } /*else if (steps.get(i).justTouched()) {
-                i = (Gdx.input.getX() / (tempSteps.get(i).getWidth() + (getWidth() / max)));
-                *//*for (float j = getValue(); j > getMin() - 1; j--) {
-                    if (j == i) break;
-                    setValue(getValue() - getStepValue());
-                    tempSteps.set((int) j, steps.get((int) j));
-                }*//*
-                for (int j = 0; j < getValue(); j++) {
-                    if (j == i) break;
-                    setValue(getValue() - getStepValue());
-                    tempSteps.set(j, steps.get(j));
-                }
-//                setValue(getValue() - getStepValue());
-//                tempSteps.set(i, steps.get(i));
-                steps.set(i, new Rectangle(0,0,0,0));
-            }*/
+            }
         }
-
-
-
-
-        /*for (int i = 0; i < tempSteps.size; i++) {
-            if (!stepsOn.get(i) && tempSteps.get(i).justTouched()) {
-                setValue((tempSteps.get(i).getX()/getWidth()) * getMax());
-                stepsOn.set(i, true);
-                for (int k = 0; k < steps.size; k++) {
-                    steps.set(k, new Rectangle(tempSteps.get(k).getX(), steps.get(k).getY(), tempSteps.get(k).getWidth(), tempSteps.get(k).getHeight()));
-                    if (k == i) break;
-                }
-                tempSteps.set(i, new Rectangle(0,0,0,0));
-                for (int j = 0; j < stepsOn.size; j++) {
-                    stepsOn.set(j, true);
-                    if (j == i) break;
-                }
-            } else if (stepsOn.get(i) && steps.get(i).justTouched()) {
-                setValue((steps.get(i).getX()/getWidth()) * getMax());
-                stepsOn.set(i, false);
-                for (int k = 0; k < steps.size; k++) {
-                    tempSteps.set(k, new Rectangle(steps.get(k).getX(), steps.get(k).getY(), steps.get(k).getWidth(), steps.get(k).getHeight()));
-                    if (k == i) break;
-                }
-                steps.set(i, new Rectangle(0,0,0,0));
-                for (int j = 0; j < stepsOn.size; j++) {
-                    stepsOn.set(j, false);
-                    if (j == i) break;
-                }
-            }
-        }*/
-
-        /*for (int i = 0; i < steps.size; i++) {
-            if (stepsOn.get(i)) {
-                steps.set(i, tempSteps.get(i));
-                tempSteps.set(i, new Rectangle(0,0,0,0));
-            } else if (!stepsOn.get(i)) {
-                tempSteps.set(i, steps.get(i));
-                steps.set(i, new Rectangle(0,0,0,0));
-            }
-        }*/
-
-        /*for (int i = 0; i < getMax(); i++) {
-            float currentRectX = (value / getMax()) * getWidth();
-
-            if (steps.get(i).getX() <= currentRectX) {
-                artist2D.drawFilledRectangle(steps.get(i), Color.WHITE);
-            } else {
-                artist2D.drawLineRectangle(steps.get(i), Color.WHITE);
-            }
-        }*/
     }
 
     public float getValue() {
@@ -178,15 +109,61 @@ public class Slider {
     }
 
     public void setValue(float value) {
+        if (value > getMax()) {
+            this.value = getMax();
+            return;
+        } else if (value < getMin()) {
+            this.value = getMin();
+            return;
+        }
+
         this.value = value;
+
+        /*if ((int) (value + getStepValue()) >= getMax()) {
+            this.value = getMax();
+        } else if ((int) (value - getStepValue()) <= getMin()) {
+            this.value = getMin();
+        }*/
+
+        // TODO: Keep trying to fix this
+        /*if (value != this.value) {
+            this.value = value;
+            if (value > this.value) {
+                this.value = Math.min(value, getValue() + getStepValue());
+            } else if (value <= getValue()) {
+                this.value = Math.max(value, getValue() + getStepValue());
+            }*/
+
+        /*if ((int) (value / getStepValue()) > getCurrentStep()) {
+            for (int i = 0; i < getCurrentStep(); i++) {
+                stepsOn.set(i, true);
+            }
+        } else if ((int) (value / getStepValue()) < getCurrentStep()) {
+            for (int i = getCurrentStep(); i < getNumOfSteps(); i++) {
+                stepsOn.set(i, false);
+            }
+        }
+        setCurrentStep((int) (value / getStepValue()));*/
     }
 
     public float getStepValue() {
         return this.stepValue;
     }
 
-    private void setStepValue(float stepValue) {
-        this.stepValue = stepValue;
+    public void setStepValue(float stepValue) {
+
+    }
+
+    public int getCurrentStep() {
+        return this.currentStep;
+    }
+
+    private void setCurrentStep(int currentStep) {
+        this.currentStep = currentStep;
+    }
+
+    public int getNumOfSteps() {
+        return this.numOfSteps;
     }
 
     public float getX() {
@@ -251,7 +228,15 @@ public class Slider {
         return this.min;
     }
 
+    public void setMin(float min) {
+        this.min = min;
+    }
+
     public float getMax() {
         return this.max;
+    }
+
+    public void setMax(float max) {
+        this.max = max;
     }
 }

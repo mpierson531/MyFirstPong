@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -44,54 +43,85 @@ public class Artist2D {
         shapeRenderer.end();
     }
 
-    public void drawLineRectangle(float x, float y, float width, float height, Color color) {
+    public void drawLineRect(float x, float y, float width, float height, Color color) {
         shapeRenderer.setColor(color);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(x, y, width, height);
         shapeRenderer.end();
     }
 
-    public void drawLineRectangle(Shape shape, Color color) {
+    public void drawLineRect(Shape rectangle, Color color) {
         shapeRenderer.setColor(color);
-        if (shape instanceof Rectangle) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
-            shapeRenderer.end();
-
-        } else if (shape instanceof Circle) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.circle(shape.getX(), shape.getY(), ((Circle) shape).getRadius());
-        }
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.rect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
+        shapeRenderer.end();
     }
 
-    public void drawLineRectangle(Actor actor, Color color) {
+    /**
+     * Draws a line rectangle
+     * @param rectangle The rectangle to draw
+     * @param color The color to draw the rectangle with
+     */
+    public void drawLineRect(Rectangle rectangle, Color color) {
+        shapeRenderer.setColor(color);
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.rect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
+            shapeRenderer.end();
+    }
+
+    /**
+     * Draws an outline of a rectangle around an actor.
+     * @param actor The actor to draw around
+     * @param color The color of the rectangle around {@code actor}
+     */
+    public void drawLineActor(Actor actor, Color color) {
         shapeRenderer.setColor(color);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
         shapeRenderer.end();
     }
 
-    public void drawFilledRectangle(float x, float y, float width, float height, Color color) {
+    /**
+     * Draws a filled rectangle.
+     * @param x x position
+     * @param y y position
+     * @param width width of the rectangle
+     * @param height height of the rectangle
+     * @param color color of the rectangle
+     */
+    public void drawFilledActor(float x, float y, float width, float height, Color color) {
         shapeRenderer.setColor(color);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.rect(x, y, width, height);
         shapeRenderer.end();
     }
 
-    public void drawFilledRectangle(Shape shape, Color color) {
+    /**
+     * Draws a filled rectangle, taking a {@code Rectangle object}
+     * @param rectangle the rectangle to draw
+     * @param color Color of {@code rectangle}
+     */
+    public void drawFilledRect(Rectangle rectangle, Color color) {
         shapeRenderer.setColor(color);
-        if (shape instanceof Rectangle) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+            shapeRenderer.rect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
             shapeRenderer.end();
-
-        } else if (shape instanceof Circle) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.circle(shape.getX(), shape.getY(), ((Circle) shape).getRadius());
-        }
     }
 
-    public void drawFilledRectangle(Actor actor, Color color) {
+    public void drawFilledRect(Shape rectangle, Color color) {
+        shapeRenderer.setColor(color);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.rect(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
+        shapeRenderer.end();
+    }
+
+    /**
+     * Draws a filled rectangle of an actor
+     * @param actor The {@code Actor} to draw
+     * @param color Color of the rectangle drawn
+     */
+    public void drawFilledActor(Actor actor, Color color) {
         shapeRenderer.setColor(color);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
@@ -102,38 +132,57 @@ public class Artist2D {
         shapeRenderer.setColor(color);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Shape shape : shapes) {
-            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+        for (int i = 0; i < shapes.size; i++) {
+            shapeRenderer.rect(shapes.get(i).getX(),
+                    shapes.get(i).getY(),
+                    shapes.get(i).getWidth(),
+                    shapes.get(i).getHeight());
         }
         shapeRenderer.end();
     }
 
-    public void batchDrawFilledRectActor(Array<Actor> actors, Color color) {
+    public void batchDrawFilledShapes(Array<Shape> shapes, Color color) {
         shapeRenderer.setColor(color);
-
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Actor actor : actors) {
-            shapeRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
+        for (int i = 0; i < shapes.size; i++) {
+            if (shapes.get(i) instanceof Rectangle) {
+                shapeRenderer.rect(shapes.get(i).getX(),
+                        shapes.get(i).getY(),
+                        shapes.get(i).getWidth(),
+                        shapes.get(i).getHeight());
+            } else if (shapes.get(i) instanceof Circle) {
+                shapeRenderer.circle(shapes.get(i).getX(), shapes.get(i).getY(), ((Circle) shapes.get(i)).getRadius());
+            }
         }
         shapeRenderer.end();
     }
 
-    public void batchDrawFilledRectActor(Actor[] actors, Color color) {
+    public void batchDrawFilledActors(Array<Actor> actors, Color color) {
         shapeRenderer.setColor(color);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Actor actor : actors) {
-            shapeRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
+        for (int i = 0; i < actors.size; i++) {
+            shapeRenderer.rect(actors.get(i).getX(), actors.get(i).getY(), actors.get(i).getWidth(), actors.get(i).getHeight());
         }
         shapeRenderer.end();
     }
 
-    public void batchDrawFilledRectActor(Shape[] shapes, Color color) {
+    public void batchDrawFilledActors(Actor[] actors, Color color) {
         shapeRenderer.setColor(color);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Shape shape : shapes) {
-            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+        for (int i = 0; i < actors.length; i++) {
+            shapeRenderer.rect(actors[i].getX(), actors[i].getY(), actors[i].getWidth(), actors[i].getHeight());
+        }
+        shapeRenderer.end();
+    }
+
+    public void batchDrawFilledShapes(Shape[] shapes, Color color) {
+        shapeRenderer.setColor(color);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < shapes.length; i++) {
+            shapeRenderer.rect(shapes[i].getX(), shapes[i].getY(), shapes[i].getWidth(), shapes[i].getHeight());
         }
         shapeRenderer.end();
     }
@@ -142,23 +191,22 @@ public class Artist2D {
             shapeRenderer.setColor(color);
 
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            for (Shape shape : shapes) {
-                if (shape instanceof Rectangle) {
-                    shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
-                } else if (shape instanceof Circle) {
-                    shapeRenderer.circle(shape.getX(), shape.getY(), ((Circle) shape).getRadius());
+            for (int i = 0; i < shapes.size; i++) {
+                if (shapes.get(i) instanceof Rectangle) {
+                    shapeRenderer.rect(shapes.get(i).getX(), shapes.get(i).getY(), shapes.get(i).getWidth(), shapes.get(i).getHeight());
+                } else if (shapes.get(i) instanceof Circle) {
+                    shapeRenderer.circle(shapes.get(i).getX(), shapes.get(i).getY(), ((Circle) shapes.get(i)).getRadius());
                 }
             }
             shapeRenderer.end();
-
     }
 
     public void batchDrawLineRectActors(Array<Actor> actors, Color color) {
         shapeRenderer.setColor(color);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (Actor actor : actors) {
-            shapeRenderer.rect(actor.getX(), actor.getY(), actor.getWidth(), actor.getHeight());
+        for (int i = 0; i < actors.size; i++) {
+            shapeRenderer.rect(actors.get(i).getX(), actors.get(i).getY(), actors.get(i).getWidth(), actors.get(i).getHeight());
         }
         shapeRenderer.end();
     }
@@ -167,8 +215,8 @@ public class Artist2D {
         shapeRenderer.setColor(color);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (Shape shape : shapes) {
-            shapeRenderer.rect(shape.getX(), shape.getY(), shape.getWidth(), shape.getHeight());
+        for (int i = 0; i < shapes.size; i++) {
+            shapeRenderer.rect(shapes.get(i).getX(), shapes.get(i).getY(), shapes.get(i).getWidth(), shapes.get(i).getHeight());
         }
         shapeRenderer.end();
     }

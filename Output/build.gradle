@@ -1,16 +1,22 @@
 buildscript {
-    
-
     repositories {
         mavenLocal()
         mavenCentral()
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://plugins.gradle.org/m2/" }
         google()
     }
-    dependencies {
 
+    dependencies {
+        classpath "edu.sc.seis.launch4j:launch4j:2.5.4"
     }
+}
+
+apply plugin: "edu.sc.seis.launch4j"
+
+launch4j {
+    mainClassName = 'com.mygdx.Pong.DesktopLauncher'
 }
 
 allprojects {
@@ -41,7 +47,6 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
-
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
@@ -53,7 +58,6 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java-library"
 
-
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
@@ -61,3 +65,17 @@ project(":core") {
         implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
     }
 }
+
+// Newly added
+/*task dist(type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+    from files(project.assetsDir);
+
+    manifest {
+        attributes 'Main-Class': project.
+    }
+}
+
+dist.dependsOn classes*/

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -29,24 +28,30 @@ public class SettingsScreen implements Screen {
     private float difficultyButtonWidth, difficultyButtonHeight;
     private float soundButtonWidth, soundButtonHeight;
     private float backButtonWidth, backButtonHeight;
-    private TextButtonStyle _textButtonStyle;
-    private final BitmapFont _font;
-    private final SpriteBatch _spriteBatch;
+    private TextButtonStyle textButtonStyle;
+    private final SpriteBatch spriteBatch;
     private final Stage stage;
-    private final Game _game;
+    private final Game game;
     private Constants constants;
     private final Artist2D artist2D;
     private FileHandler fileHandler;
     private JsonHandler jsonHandler;
+    private Color buttonPressColor;
 
-    public SettingsScreen(final Game game, Artist2D artist2D, final TextButtonStyle textButtonStyle, final SpriteBatch spriteBatch,
-                          Constants constants, FileHandler fileHandler, JsonHandler jsonHandler) {
+    public SettingsScreen(final Game game,
+                          Artist2D artist2D,
+                          final TextButtonStyle textButtonStyle,
+                          final SpriteBatch spriteBatch,
+                          Constants constants,
+                          FileHandler fileHandler,
+                          JsonHandler jsonHandler,
+                          Color buttonPressColor) {
         this.fileHandler = fileHandler;
         this.jsonHandler = jsonHandler;
-        _game = game;
-        _spriteBatch = spriteBatch;
-        _font = textButtonStyle.font;
-        _textButtonStyle = textButtonStyle;
+        this.game = game;
+        this.spriteBatch = spriteBatch;
+        this.textButtonStyle = textButtonStyle;
+        this.buttonPressColor = buttonPressColor;
 
         screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -61,22 +66,32 @@ public class SettingsScreen implements Screen {
         stage.addActor(soundButton);
         stage.addActor(difficultyButton);
         Gdx.input.setInputProcessor(stage);
-
-        // TODO: Add a setting for defaulting to full screen when pressing start
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
-        drawButtonBordersOnHover();
+        drawButtonStyles();
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 
-    private void drawButtonBordersOnHover() {
+    private void drawButtonStyles() {
         difficultyButton.drawBorderOnHover(artist2D, Color.WHITE);
         soundButton.drawBorderOnHover(artist2D, Color.WHITE);
         backButton.drawBorderOnHover(artist2D, Color.WHITE);
+
+        if (difficultyButton.isPressed()) {
+            artist2D.drawFilledActor(difficultyButton, buttonPressColor);
+        }
+
+        if (soundButton.isPressed()) {
+            artist2D.drawFilledActor(soundButton, buttonPressColor);
+        }
+
+        if (backButton.isPressed()) {
+            artist2D.drawFilledActor(backButton, buttonPressColor);
+        }
     }
 
     private void setupTextButtons() {
@@ -85,32 +100,47 @@ public class SettingsScreen implements Screen {
         difficultyButtonSize = new Vector2(difficultyButtonWidth, difficultyButtonHeight);
         difficultyButtonPos = new Vector2(MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 120f), screenSize.x),
                 MathUtils.toValue(MathUtils.toPercentage(screenSize.y, screenSize.y/2f - 75f), screenSize.y));
+
         soundButtonWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 200), screenSize.x);
         soundButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 47.5f), screenSize.y);
         soundButtonSize = new Vector2(soundButtonWidth, soundButtonHeight);
         soundButtonPos = new Vector2(MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 120), screenSize.x),
                 MathUtils.toValue(MathUtils.toPercentage(screenSize.y, screenSize.y/2f - 20), screenSize.y));
 
-        difficultyButton = new TextButton("Difficulty", _textButtonStyle, difficultyButtonPos.x, difficultyButtonPos.y,
+        difficultyButton = new TextButton("Difficulty", textButtonStyle, difficultyButtonPos.x, difficultyButtonPos.y,
                 difficultyButtonSize.x, difficultyButtonSize.y);
         difficultyButton.getLabel().setAlignment(Align.center, Align.center);
 
-        soundButton = new TextButton("Sound", _textButtonStyle, soundButtonPos.x, soundButtonPos.y, soundButtonSize.x, soundButtonSize.y);
+        soundButton = new TextButton("Sound", textButtonStyle, soundButtonPos.x, soundButtonPos.y, soundButtonSize.x, soundButtonSize.y);
         soundButton.getLabel().setAlignment(Align.center, Align.center);
 
         soundButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
-                _game.setScreen(new SoundScreen(_game, _textButtonStyle, artist2D, _spriteBatch,
-                        constants, fileHandler, jsonHandler, soundButton.getStyle().font));
+                game.setScreen(new SoundScreen(SettingsScreen.this.game,
+                        SettingsScreen.this.textButtonStyle,
+                        SettingsScreen.this.artist2D,
+                        SettingsScreen.this.spriteBatch,
+                        SettingsScreen.this.constants,
+                        SettingsScreen.this.fileHandler,
+                        SettingsScreen.this.jsonHandler,
+                        SettingsScreen.this.soundButton.getStyle().font,
+                        SettingsScreen.this.buttonPressColor));
+                SettingsScreen.this.dispose();
             }
         });
 
         difficultyButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                _game.setScreen(new DifficultyScreen(artist2D, _game, _spriteBatch, constants, fileHandler, jsonHandler));
-                dispose();
+                game.setScreen(new DifficultyScreen(SettingsScreen.this.artist2D,
+                        SettingsScreen.this.game,
+                        SettingsScreen.this.spriteBatch,
+                        SettingsScreen.this.constants,
+                        SettingsScreen.this.fileHandler,
+                        SettingsScreen.this.jsonHandler,
+                        SettingsScreen.this.buttonPressColor));
+                SettingsScreen.this.dispose();
             }
         });
 
@@ -119,17 +149,16 @@ public class SettingsScreen implements Screen {
         backButtonWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 100), screenSize.x);
         backButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 47.5f), screenSize.y);
         backButtonSize = new Vector2(backButtonWidth, backButtonHeight);
-        backButton = new TextButton("Back", _textButtonStyle, backButtonPos.x, backButtonPos.y, backButtonSize.x, backButtonSize.y);
+        backButton = new TextButton("Back", textButtonStyle, backButtonPos.x, backButtonPos.y, backButtonSize.x, backButtonSize.y);
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                jsonHandler.serialize(constants, fileHandler.getFile());
-                constants.setStaticFieldsToInstanceFields();
-                _game.setScreen(new StartMenu(_game));
+                SettingsScreen.this.jsonHandler.serialize(constants, fileHandler.getFile());
+                SettingsScreen.this.constants.setStaticFieldsToInstanceFields();
+                SettingsScreen.this.game.setScreen(new StartMenu(game));
+                SettingsScreen.this.dispose();
             }
         });
-
-        // TODO: Implement Sound screen and dispose() listener; implement serialization; implement back button
     }
 
     @Override

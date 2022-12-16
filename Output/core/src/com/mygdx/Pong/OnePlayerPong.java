@@ -2,18 +2,19 @@ package com.mygdx.Pong;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.mygdx.Pong.Engine.Audio.AudioHandler;
 import com.mygdx.Pong.Engine.Math.Vector2;
 import com.mygdx.Pong.Engine.Shapes.Classes.Circle;
 import com.mygdx.Pong.Engine.Shapes.Classes.Collisions;
-import com.mygdx.Pong.Engine.Shapes.Classes.Rectangle;
+import com.mygdx.Pong.Screens.StartMenu;
 
 public class OnePlayerPong implements Screen {
 	private final ShapeRenderer shapeRenderer;
@@ -26,9 +27,14 @@ public class OnePlayerPong implements Screen {
 	private Circle ballClone;
 	private Game game;
 	private ExtendViewport extendViewport;
+	private AudioHandler audioHandler;
+	private float soundPitch;
 
 	public OnePlayerPong(Game game) {
 		this.game = game;
+
+		audioHandler = new AudioHandler(AudioHandler.newSound(Gdx.files.internal("Text 1.mp3")));
+		soundPitch = 1;
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -37,7 +43,6 @@ public class OnePlayerPong implements Screen {
 
 		shapeRenderer = new ShapeRenderer();
 
-		// Shape inheritor initialization
 		playerOne = new Player(50f, 50f, 30f, 100f);
 		comPlayer = new ComPlayer();
 		ball = new Circle(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 10f,
@@ -52,10 +57,9 @@ public class OnePlayerPong implements Screen {
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0, 1);
-//		extendViewport.apply(true);
 		camera.update(true);
 
-		scoreUI.drawScores(playerOne.getScore(), comPlayer.getScore(), camera);
+		scoreUI.drawScores(playerOne.getScore(), comPlayer.getScore());
 		scoreUI.act(Gdx.graphics.getDeltaTime());
 		scoreUI.draw();
 
@@ -86,14 +90,25 @@ public class OnePlayerPong implements Screen {
 		checkPlayerScored();
 		comPlayer.calculateNewBallPosition(playerOne.getRectangle(), ballClone = ball.clone());
 		comPlayer.move(ballClone, 5f);
+
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+			game.setScreen(new StartMenu(game));
+			dispose();
+		}
+
+		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+			if (ball.getVelocity().x > 0) {
+				ball.setVelocityX(-ball.getVelocity().x - comPlayer.getRectangle().getWidth());
+			} else {
+				ball.setVelocityX(-ball.getVelocity().x + playerOne.getRectangle().getWidth());
+			}
+		}
 	}
 
 	@Override
 	public void resize(int width, int height) {
-		extendViewport.update(width, height, false);
+		extendViewport.update(width, height);
 		scoreUI.resize(width, height);
-		/*System.out.println("Screen height after resizing: " + extendViewport.getScreenHeight());
-		System.out.println("World height after resizing: " + extendViewport.getWorldHeight());*/
 	}
 
 	@Override
@@ -102,8 +117,8 @@ public class OnePlayerPong implements Screen {
 	}
 
 	private void moveBall() {
-		ball.x += ball.getVelocity().x * Gdx.graphics.getDeltaTime();
-		ball.y += ball.getVelocity().y * Gdx.graphics.getDeltaTime();
+		ball.setX(ball.getX() + ball.getVelocity().x * Gdx.graphics.getDeltaTime());
+		ball.setY(ball.getY() + ball.getVelocity().y * Gdx.graphics.getDeltaTime());
 
 		if (collisions.isCollidingCircleRect(playerOne.getRectangle(), ball)) {
 			comPlayer.calculateNewBallPosition(playerOne.getRectangle(), ballClone = ball.clone());
@@ -114,6 +129,8 @@ public class OnePlayerPong implements Screen {
 			ball.setVelocityX(newBallSpeedX * (-1 * oldSign));
 			ball.setVelocityY(newBallSpeedY);
 			collisions.reset();
+
+			audioHandler.playSound(Constants.VOLUME, soundPitch, 0.3f);
 
 			System.out.println("Ball velocityX: " + ball.getVelocity().x);
 			System.out.println("Ball velocityY: " + ball.getVelocity().y);
@@ -126,20 +143,10 @@ public class OnePlayerPong implements Screen {
 			ball.setVelocityY(-newBallSpeedY);
 			collisions.reset();
 
+			audioHandler.playSound(Constants.VOLUME, soundPitch, 0.3f);
+
 			System.out.println("Ball velocityX: " + ball.getVelocity().x);
 			System.out.println("Ball velocityY: " + ball.getVelocity().y);
-		}
-	}
-
-	private void checkPlayerScored() {
-		if (ball.getX() > Constants.RIGHT_GOAL_X) {
-			playerOne.updateScore(1);
-			resetBall();
-		}
-
-		if (ball.getX() < Constants.LEFT_GOAL_X) {
-			comPlayer.updateScore(1);
-			resetBall();
 		}
 	}
 
@@ -152,6 +159,18 @@ public class OnePlayerPong implements Screen {
 			ball.setVelocityX(-newBallSpeedX * (-1 * oldSign));
 			ball.setVelocityY(newBallSpeedY);
 			collisions.reset();
+		}
+	}
+
+	private void checkPlayerScored() {
+		if (ball.getX() > Constants.RIGHT_GOAL_X) {
+			playerOne.updateScore(1);
+			resetBall();
+		}
+
+		if (ball.getX() < Constants.LEFT_GOAL_X) {
+			comPlayer.updateScore(1);
+			resetBall();
 		}
 	}
 

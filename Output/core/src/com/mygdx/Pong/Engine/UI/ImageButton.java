@@ -17,23 +17,23 @@ public class ImageButton extends com.badlogic.gdx.scenes.scene2d.ui.ImageButton 
         setBackground(backgroundImage.getDrawable());
     }
 
-    public void drawLineRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawLineRectangle(getX(), getY(), getWidth(), getHeight(), color);
+    public void drawOutline(Artist2D artist2D, Color color) {
+        artist2D.drawLineActor(this, color);
     }
 
-    public void drawFilledRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawFilledRectangle(getX(), getY(), getWidth(), getHeight(), color);
+    public void drawFilled(Artist2D artist2D, Color color) {
+        artist2D.drawFilledActor(getX(), getY(), getWidth(), getHeight(), color);
     }
 
-    public void drawFilledRectOnPress(Artist2D artist2d, Color color) {
+    public void drawFilledOnPress(Artist2D artist2d, Color color) {
         if (this.isPressed()) {
-            artist2d.drawFilledRectangle(this, color);
+            artist2d.drawFilledActor(this, color);
         }
     }
 
-    public void drawLineRectOnPress(Artist2D artist2d, Color color) {
+    public void drawLineOnPress(Artist2D artist2d, Color color) {
         if (this.isPressed()) {
-            artist2d.drawLineRectangle(this, color);
+            artist2d.drawLineActor(this, color);
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.mygdx.Pong;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Timer;
@@ -9,7 +8,6 @@ public class TouchHoldListener extends InputListener {
     private boolean down;
     private boolean held;
     private final float holdDelaySeconds;
-    private float inputTime;
     private float intervalSeconds;
     private Timer.Task delayedHoldTask;
     private Runnable runnable;
@@ -35,18 +33,13 @@ public class TouchHoldListener extends InputListener {
 
     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         runnable.run();
-
-        float deltaTime = Gdx.graphics.getDeltaTime();
-        inputTime += deltaTime;
-
         delayedHoldTask = Timer.schedule(getDelayedHoldTask(), holdDelaySeconds, intervalSeconds, 1000);
-
+        this.down = true;
         return true;
     }
 
     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
         delayedHoldTask.cancel();
-        inputTime = 0f;
         this.down = false;
         this.held = false;
     }
@@ -55,6 +48,7 @@ public class TouchHoldListener extends InputListener {
         return new Timer.Task() {
             @Override
             public void run() {
+                TouchHoldListener.this.held = true;
                 runnable.run();
             }
         };

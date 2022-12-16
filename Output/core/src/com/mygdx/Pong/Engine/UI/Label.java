@@ -33,11 +33,11 @@ public class Label extends com.badlogic.gdx.scenes.scene2d.ui.Label {
         super.setSize(size.x, size.y);
     }
 
-    public void drawLineRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawLineRectangle(getX(), getY(), getWidth(), getHeight(), color);
+    public void drawOutline(Artist2D artist2D, Color color) {
+        artist2D.drawLineActor(this, color);
     }
 
-    public void drawFilledRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawFilledRectangle(getX(), getY(), getWidth(), getHeight(), color);
+    public void drawFilled(Artist2D artist2D, Color color) {
+        artist2D.drawFilledActor(getX(), getY(), getWidth(), getHeight(), color);
     }
 }

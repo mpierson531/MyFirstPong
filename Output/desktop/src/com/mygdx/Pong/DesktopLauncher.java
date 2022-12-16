@@ -12,6 +12,6 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.useVsync(true);
 		config.enableGLDebugOutput(true, System.out);
-		new Lwjgl3Application(new Main(), config).setLogLevel(Application.LOG_DEBUG);
+		new Lwjgl3Application(new Main(), config);
 	}
 }

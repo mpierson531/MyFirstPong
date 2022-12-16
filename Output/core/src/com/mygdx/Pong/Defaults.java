@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.mygdx.Pong.Engine.Math.Vector2;
 
 public class Defaults {
-    public static final float MAX_BALL_SPEED = 425f; // TODO: Change back to 325f
+    public static final float MAX_BALL_SPEED = 425f;
     public static final float MAX_BALL_ANGLE = 45f;
     public static final float PLAYER_MOVEMENT_SPEED = 278.5f;
     public static final float COM_PLAYER_SPEED = 1.825f;

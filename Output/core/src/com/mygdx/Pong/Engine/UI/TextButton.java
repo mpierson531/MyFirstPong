@@ -40,33 +40,33 @@ public class TextButton extends com.badlogic.gdx.scenes.scene2d.ui.TextButton {
 
     public void drawBorderOnHover(Artist2D artist2d, Color color) {
         if (this.isOver()) {
-            artist2d.drawLineRectangle(this, color);
+            artist2d.drawLineActor(this, color);
         }
     }
 
     public void drawBorderOnHover(Artist2D artist2D, Vector2 position, float width, float height, Color color) {
         if (this.isOver()) {
-            artist2D.drawLineRectangle(position.x, position.y, width, height, color);
+            artist2D.drawLineActor(this, color);
         }
     }
 
     public void drawLineRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawLineRectangle(getX(), getY(), getWidth(), getHeight(), color);
+        artist2D.drawLineActor(this, color);
     }
 
     public void drawFilledRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawFilledRectangle(getX(), getY(), getWidth(), getHeight(), color);
+        artist2D.drawFilledActor(getX(), getY(), getWidth(), getHeight(), color);
     }
 
     public void drawFilledRectOnPress(Artist2D artist2d, Color color) {
         if (this.isPressed()) {
-            artist2d.drawFilledRectangle(this, color);
+            artist2d.drawFilledActor(this, color);
         }
     }
 
     public void drawLineRectOnPress(Artist2D artist2d, Color color) {
         if (this.isPressed()) {
-            artist2d.drawLineRectangle(this, color);
+            artist2d.drawLineActor(this, color);
         }
     }
 

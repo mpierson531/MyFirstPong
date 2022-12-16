@@ -36,11 +36,11 @@ public class ScoreUI {
     public ScoreUI(final Game game, float screenWidth, float screenHeight, Camera camera) {
         this.game = game;
 
-        extendViewport = new ExtendViewport(screenWidth, screenHeight);
+        extendViewport = new ExtendViewport(screenWidth, screenHeight, camera);
         extendViewport.apply(true);
 
         fontBatch = new SpriteBatch();
-        fontGenerator = new FreeTypeFontGenerator(Gdx.files.absolute("C:\\Users\\Micah\\MyFirstPong\\Output\\assets\\PixeloidSans-nR3g1.ttf"));
+        fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("PixeloidSans-nR3g1.ttf"));
         fontParameters = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         shapeRenderer = new ShapeRenderer();
@@ -88,7 +88,7 @@ public class ScoreUI {
         Gdx.input.setInputProcessor(stage);
     }
 
-    public void drawScores(int leftScore, int rightScore, Camera camera) {
+    public void drawScores(int leftScore, int rightScore) {
         fontBatch.setProjectionMatrix(stage.getViewport().getCamera().combined);
         shapeRenderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
         shapeRenderer.setColor(Color.WHITE);
@@ -127,8 +127,6 @@ public class ScoreUI {
         backButtonX = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, screenSize.x/2f - 370), screenSize.x);
         backButtonY = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, screenSize.y - 45), screenSize.y);
         backButtonPos = new Vector2(backButtonX, backButtonY);
-//        backButtonWidth = MathUtils.toValue(MathUtils.toPercentage(screenSize.x, 45), screenSize.x);
-//        backButtonHeight = MathUtils.toValue(MathUtils.toPercentage(screenSize.y, 25), screenSize.y);
         backButtonSize = new Vector2(backButtonWidth, backButtonHeight);
     }
 

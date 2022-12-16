@@ -2,6 +2,7 @@ package com.mygdx.Pong;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,9 +10,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.mygdx.Pong.Engine.Audio.AudioHandler;
 import com.mygdx.Pong.Engine.Math.Vector2;
 import com.mygdx.Pong.Engine.Shapes.Classes.Circle;
 import com.mygdx.Pong.Engine.Shapes.Classes.Collisions;
+import com.mygdx.Pong.Screens.StartMenu;
 
 public class TwoPlayerPong implements Screen {
 	private final ShapeRenderer shapeRenderer;
@@ -23,9 +26,12 @@ public class TwoPlayerPong implements Screen {
 	private final ScoreUI scoreUI;
 	private Game game;
 	private ExtendViewport extendViewport;
+	private AudioHandler audioHandler;
 
 	public TwoPlayerPong(Game game) {
 		this.game = game;
+
+		audioHandler = new AudioHandler(AudioHandler.newSound(Gdx.files.internal("Text 1.mp3")));
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -34,7 +40,6 @@ public class TwoPlayerPong implements Screen {
 
 		shapeRenderer = new ShapeRenderer();
 
-		// Shape inheritor initialization
 		playerOne = new Player(50f, 50f, 30f, 100f);
 		playerTwo = new Player(Gdx.graphics.getWidth() - 50, 50, 30f, 100f);
 		ball = new Circle(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f, 10f,
@@ -48,10 +53,9 @@ public class TwoPlayerPong implements Screen {
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0, 1);
-//		extendViewport.apply(true);
 		camera.update(true);
 
-		scoreUI.drawScores(playerOne.getScore(), playerTwo.getScore(), camera);
+		scoreUI.drawScores(playerOne.getScore(), playerTwo.getScore());
 		scoreUI.act(Gdx.graphics.getDeltaTime());
 		scoreUI.draw();
 
@@ -68,8 +72,6 @@ public class TwoPlayerPong implements Screen {
 
 		shapeRenderer.setColor(Color.RED);
 
-//		scoreUI.getStage().act(Gdx.graphics.getDeltaTime());
-
 		moveBall();
 		keepBallInBounds();
 		checkPlayerScored();
@@ -77,6 +79,19 @@ public class TwoPlayerPong implements Screen {
 		playerTwo.arrowKeyMove();
 		playerOne.keepInBounds();
 		playerTwo.keepInBounds();
+
+		if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+			game.setScreen(new StartMenu(game));
+			dispose();
+		}
+
+		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+			if (ball.getVelocity().x > 0) {
+				ball.setVelocityX(-ball.getVelocity().x - playerTwo.getRectangle().getWidth());
+			} else {
+				ball.setVelocityX(-ball.getVelocity().x + playerOne.getRectangle().getWidth());
+			}
+		}
 	}
 
 	@Override
@@ -88,8 +103,6 @@ public class TwoPlayerPong implements Screen {
 	public void resize(int width, int height) {
 		extendViewport.update(width, height, false);
 		scoreUI.resize(width, height);
-		/*System.out.println("Screen height after resizing: " + extendViewport.getScreenHeight());
-		System.out.println("World height after resizing: " + extendViewport.getWorldHeight());*/
 	}
 
 	@Override
@@ -125,6 +138,8 @@ public class TwoPlayerPong implements Screen {
 			ball.setVelocityY(newBallSpeedY);
 			collisions.reset();
 
+			audioHandler.playSound(Constants.VOLUME, 0.3f);
+
 			System.out.println("Ball velocityX: " + ball.getVelocity().x);
 			System.out.println("Ball velocityY: " + ball.getVelocity().y);
 		} else if (collisions.isCollidingCircleRect(playerTwo.getRectangle(), ball)) {
@@ -136,6 +151,8 @@ public class TwoPlayerPong implements Screen {
 			ball.setVelocityX(newBallSpeedX * (-1 * oldSign));
 			ball.setVelocityY(newBallSpeedY);
 			collisions.reset();
+
+			audioHandler.playSound(Constants.VOLUME, 0.3f);
 
 			System.out.println("Ball velocityX: " + ball.getVelocity().x);
 			System.out.println("Ball velocityY: " + ball.getVelocity().y);

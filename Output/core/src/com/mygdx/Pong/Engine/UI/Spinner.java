@@ -404,31 +404,31 @@ public class Spinner extends WidgetGroup {
         return actor == getButtonOne() || actor == getButtonTwo() || actor == getLabel();
     }
 
-    public void drawLineRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawLineRectangle(getX(), getY(), getWidth(), getHeight(), color);
+    public void drawOutline(Artist2D artist2D, Color color) {
+        artist2D.drawLineActor(this, color);
     }
 
-    public void drawFilledRectBackground(Artist2D artist2D, Color color) {
-        artist2D.drawFilledRectangle(getX(), getY(), getWidth(), getHeight(), color);
+    public void drawFilled(Artist2D artist2D, Color color) {
+        artist2D.drawFilledActor(getX(), getY(), getWidth(), getHeight(), color);
     }
 
-    public void drawFilledRectOnPress(Artist2D artist2d, Color color) {
+    public void drawFilledOnPress(Artist2D artist2d, Color color) {
         if (getButtonOne().isPressed()) {
-            artist2d.drawFilledRectangle(getButtonOne(), color);
+            artist2d.drawFilledActor(getButtonOne(), color);
         }
 
         if (getButtonTwo().isPressed()) {
-            artist2d.drawFilledRectangle(getButtonTwo(), color);
+            artist2d.drawFilledActor(getButtonTwo(), color);
         }
     }
 
-    public void drawLineRectOnPress(Artist2D artist2d, Color color) {
+    public void drawLineOnPress(Artist2D artist2d, Color color) {
         if (getButtonOne().isPressed()) {
-            artist2d.drawLineRectangle(getButtonOne(), color);
+            artist2d.drawLineActor(getButtonOne(), color);
         }
 
         if (getButtonTwo().isPressed()) {
-            artist2d.drawLineRectangle(getButtonTwo(), color);
+            artist2d.drawLineActor(getButtonTwo(), color);
         }
     }
 }

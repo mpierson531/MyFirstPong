@@ -1,11 +1,7 @@
 package com.mygdx.Pong.Engine.UI;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
-import com.mygdx.Pong.Engine.Math.Vector2;
-import com.mygdx.Pong.Engine.UI.ImageButton;
 
 public class ImageSpinner extends Spinner {
 
