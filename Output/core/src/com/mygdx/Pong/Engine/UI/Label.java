@@ -15,8 +15,8 @@ public class Label extends com.badlogic.gdx.scenes.scene2d.ui.Label {
 
     public Label(CharSequence text, LabelStyle style, Vector2 position, Vector2 size) {
         super(text, style);
-        setPosition(position.x, position.y);
-        setSize(size.x, size.y);
+        setPosition(position);
+        setSize(size);
     }
 
     public Label(CharSequence text, LabelStyle style, float x, float y, float width, float height) {

@@ -3,7 +3,6 @@ package com.mygdx.Pong.Screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -24,19 +23,19 @@ import com.mygdx.Pong.Engine.UI.Slider;
 import com.mygdx.Pong.Engine.UI.TextButton;
 
 public class SoundScreen implements Screen {
-    private Stage stage;
-    private Slider volumeSlider;
-    private Label volumeLabel, muteLabel;
-    private CheckBox muteCheckbox;
-    private TextButton backButton;
-    private com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle textButtonStyle;
-    private Game game;
-    private Artist2D artist2D;
-    private SpriteBatch spriteBatch;
-    private Constants constants;
-    private FileHandler fileHandler;
-    private JsonHandler jsonHandler;
-    private Color buttonPressColor;
+    private final Stage stage;
+    private final Slider volumeSlider;
+    private final Label volumeLabel, muteLabel;
+    private final CheckBox muteCheckbox;
+    private final TextButton backButton;
+    private final com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle textButtonStyle;
+    private final Game game;
+    private final Artist2D artist2D;
+    private final SpriteBatch spriteBatch;
+    private final Constants constants;
+    private final FileHandler fileHandler;
+    private final JsonHandler jsonHandler;
+    private final Color buttonPressColor;
 
     public SoundScreen(Game game,
                        final TextButton.TextButtonStyle textButtonStyle,
@@ -125,31 +124,28 @@ public class SoundScreen implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
-        drawCheckBoxStyle(buttonPressColor);
-        drawLabelUnderlines();
-        drawBackButtonBorderOnHover();
+        drawStyles(buttonPressColor);
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         volumeSlider.draw(artist2D, Color.WHITE);
     }
 
-    private void drawCheckBoxStyle(Color muteCheckboxPressColor) {
+    private void drawStyles(Color muteCheckboxPressColor) {
         artist2D.drawLineActor(muteCheckbox, Color.WHITE);
+        backButton.drawBorderOnHover(artist2D, Color.WHITE);
 
         if (muteCheckbox.isPressed()) {
             artist2D.drawFilledActor(muteCheckbox, muteCheckboxPressColor);
         }
-    }
 
-    private void drawLabelUnderlines() {
+        if (backButton.isPressed()) {
+            artist2D.drawFilledActor(backButton, buttonPressColor);
+        }
+
         artist2D.drawFilledActor(volumeLabel.getX(), volumeLabel.getY(),
                 volumeSlider.getX() + volumeSlider.getWidth() - volumeLabel.getX(), 2.5f, Color.WHITE);
         artist2D.drawFilledActor(muteLabel.getX(), muteLabel.getY(),
                 muteCheckbox.getX() + muteCheckbox.getWidth() - muteLabel.getX(), 2.5f, Color.WHITE);
-    }
-
-    private void drawBackButtonBorderOnHover() {
-        backButton.drawBorderOnHover(artist2D, Color.WHITE);
     }
 
     @Override

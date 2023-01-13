@@ -13,14 +13,14 @@ public class ImageSpinner extends Spinner {
         super(buttonOne, label, buttonTwo, alignment, min, max, step, buttonOffset);
     }
 
-    public Drawable getImage() {
+    public Drawable getImageDrawable() {
         if (getButtonOne().getBackground() != getButtonTwo().getBackground()) {throw new RuntimeException("'buttonOne' and 'buttonTwo' backgrounds could not rectified with each other.");
         }
 
         return getButtonOne().getBackground();
     }
 
-    public Drawable getImage(ImageButton button) {
+    public Drawable getImageDrawable(ImageButton button) {
         if (actorBelongs(button)) {
             return button.getBackground();
         } else {

@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.WidgetGroup;
 import com.mygdx.Pong.Engine.Math.Vector2;
+import com.mygdx.Pong.TouchHoldListener;
 
 public class Spinner extends WidgetGroup {
     private Button buttonOne;
@@ -29,7 +30,15 @@ public class Spinner extends WidgetGroup {
 
     /** Using labelValue = String.format("%.2", args) as a workaround for labelFont/labelLength issue and issue of floating-point precision **/
 
-    public Spinner(Button buttonOne, Label label, Button buttonTwo, int alignment, float min, float max, float step, float buttonOffset, float labelFontSize) {
+    public Spinner(Button buttonOne,
+                   Label label,
+                   Button buttonTwo,
+                   int alignment,
+                   float min,
+                   float max,
+                   final float step,
+                   float buttonOffset,
+                   float labelFontSize, float holdDelaySeconds, float intervalSeconds) {
         this.x = buttonOne.getX();
         this.y = buttonOne.getY();
         this.width = buttonOne.getWidth() + label.getWidth() + buttonTwo.getWidth();
@@ -56,14 +65,46 @@ public class Spinner extends WidgetGroup {
         addActor(label);
         addActor(buttonTwo);
         this.actors = new Actor[] { buttonOne, label, buttonTwo };
+        getButtonOne().addListener(new TouchHoldListener(holdDelaySeconds, intervalSeconds, new Runnable() {
+            @Override
+            public void run() {
+                decrement();
+            }
+        }));
+
+        getButtonTwo().addListener(new TouchHoldListener(holdDelaySeconds, intervalSeconds, new Runnable() {
+            @Override
+            public void run() {
+                increment();
+            }
+        }));
+
+        float floatLabelValue = Float.parseFloat(getLabelValue().toString());
+        setLabelValue("0");
+
+        if (floatLabelValue >= 0) {
+            for (float i = floatLabelValue; i > 0; i -= step) {
+                increment();
+                if (Float.parseFloat(getLabelValue().toString()) >= getMax()) {
+                    break;
+                }
+            }
+        } else {
+            for (float i = Math.abs(floatLabelValue); i > 0; i -= step) {
+                decrement();
+                if (Float.parseFloat(getLabelValue().toString()) <= getMin()) {
+                    break;
+                }
+            }
+        }
     }
 
     public Spinner(Button buttonOne, Label label, Button buttonTwo, int alignment, float min, float max, float buttonOffset, float labelFontSize) {
-        this(buttonOne, label, buttonTwo, alignment, min, max, 1, buttonOffset, labelFontSize);
+        this(buttonOne, label, buttonTwo, alignment, min, max, 1, buttonOffset, labelFontSize, 0, 0);
     }
 
     public Spinner(Button buttonOne, Label label, Button buttonTwo, int alignment, float range, float buttonOffset, float labelFontSize) {
-        this(buttonOne, label, buttonTwo, alignment, 0, range, 1, buttonOffset, labelFontSize);
+        this(buttonOne, label, buttonTwo, alignment, 0, range, 1, buttonOffset, labelFontSize, 0, 0);
     }
 
     public Spinner() {
@@ -78,7 +119,7 @@ public class Spinner extends WidgetGroup {
         labelValue = getLabelValue().toString();
         labelValueFloat = Float.parseFloat(labelValue) + step;
 
-        if (labelValueFloat != getMax()) {
+        if (labelValueFloat <= getMax()) {
             this.label.setText(String.format("%.2f", labelValueFloat));
         }
 
@@ -97,7 +138,7 @@ public class Spinner extends WidgetGroup {
         labelValue = getLabelValue().toString();
         labelValueFloat = Float.parseFloat(labelValue) - step;
 
-        if (labelValueFloat != getMin()) {
+        if (labelValueFloat >= getMin()) {
             this.label.setText(String.format("%.2f", labelValueFloat));
         }
 
@@ -108,17 +149,15 @@ public class Spinner extends WidgetGroup {
         }
     }
 
-    // TODO: Figure out how to move buttons dynamically based on label value
-
     private void adjustButtons(boolean greaterThan) {
         if (greaterThan) {
-            for (int i = 0; i < getLabelValue().toString().length(); i++) {
+            for (int i = 0; i < getLabelValue().toString().length() + 1 ; i++) {
                 buttonOne.setX(buttonOne.getX() - buttonOffset);
                 buttonTwo.setX(buttonTwo.getX() + buttonOffset);
             }
             labelFontSize -= 3;
         } else {
-            for (int i = 0; i < getLabelValue().toString().length(); i++) {
+            for (int i = 0; i < getLabelValue().toString().length() + 1; i++) {
                 buttonOne.setX(buttonOne.getX() + buttonOffset);
                 buttonTwo.setX(buttonTwo.getX() - buttonOffset);
             }
@@ -137,6 +176,49 @@ public class Spinner extends WidgetGroup {
         } else {
             getButtonOne().setPosition(getButtonOne().getX() + (buttonOffset * numberOfOffsets), getY());
             getButtonTwo().setPosition(getButtonTwo().getX() - (buttonOffset * numberOfOffsets), getY());
+        }
+    }
+
+    public CharSequence getLabelValue() {
+        return this.label.getText();
+    }
+
+    public void setLabelValue(CharSequence labelText) {
+        float floatLabelValue = Float.parseFloat(getLabelValue().toString());
+
+        if (floatLabelValue >= 0) {
+            for (float i = floatLabelValue; i > 0; i -= getStep()) {
+                decrement();
+                if (Float.parseFloat(getLabelValue().toString()) <= getMin()) {
+                    break;
+                }
+            }
+        } else {
+            for (float i = Math.abs(floatLabelValue); i > 0; i -= getStep()) {
+                increment();
+                if (Float.parseFloat(getLabelValue().toString()) >= getMax()) {
+                    break;
+                }
+            }
+        }
+
+        floatLabelValue = Float.parseFloat(labelText.toString());
+        getLabel().setText(0);
+
+        if (floatLabelValue >= 0) {
+            for (float i = floatLabelValue; i > 0; i -= step) {
+                increment();
+                if (Float.parseFloat(getLabelValue().toString()) >= getMax()) {
+                    break;
+                }
+            }
+        } else {
+            for (float i = Math.abs(floatLabelValue); i > 0; i -= step) {
+                decrement();
+                if (Float.parseFloat(getLabelValue().toString()) <= getMin()) {
+                    break;
+                }
+            }
         }
     }
 
@@ -328,14 +410,6 @@ public class Spinner extends WidgetGroup {
         this.buttonOne.align(alignment);
         this.label.setAlignment(alignment);
         this.buttonTwo.align(alignment);
-    }
-
-    public CharSequence getLabelValue() {
-        return this.label.getText();
-    }
-
-    public void setLabelValue(CharSequence labelText) {
-        this.label.setText(labelText);
     }
 
     public boolean addListener(EventListener listener) {

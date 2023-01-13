@@ -1,17 +1,15 @@
 package com.mygdx.Pong;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mygdx.Pong.Engine.Math.Vector2;
 
 @JsonIgnoreProperties(value = { "centerScreen" })
 public class Constants {
-
-    // TODO: MAKE SURE TO IMPLEMENT SCREEN SIZE PERCENTAGES AS VALUES FOR EVERYTHING
-
     public static float MAX_BALL_SPEED = 425f;
     public static float MAX_BALL_ANGLE = 45f;
-    public static float PLAYER_MOVEMENT_SPEED = 278.5f;
+    public static float PLAYER_MOVEMENT_SPEED = 350f;
     public static float COM_PLAYER_SPEED = 1.825f;
     public static float COM_PLAYER_SPEED_MULTIPLIER = 1f;
     public static float LEFT_GOAL_X = -2.5f;
@@ -21,24 +19,28 @@ public class Constants {
     public static Vector2 CENTER_SCREEN = new Vector2(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f);
     public static float VOLUME = 100;
     public static boolean MUTE = false;
+    public static Color PADDLE_COLOR = Color.WHITE;
+    public static Color BALL_COLOR = Color.WHITE;
+    public static Color FONT_COLOR = Color.WHITE;
 
-    public float maxBallSpeed = 425f;
-    public float maxBallAngle = 45f;
-    public float playerMovementSpeed = 278.5f;
-    public float comPlayerSpeed = 1.825f;
-    public float comPlayerSpeedMultiplier = 1f;
-    public float leftGoalX = -2.5f;
-    public float rightGoalX = Gdx.graphics.getWidth() + 2.5f;
-    public float upperBoundsY = Gdx.graphics.getHeight() - 4.2f;
-    public float lowerBoundsY = 0 + 4.2f;
-    public Vector2 centerScreen = new Vector2(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f);
-    public float volume = 100;
-    public boolean mute = false;
+    public float maxBallSpeed;
+    public float maxBallAngle;
+    public float playerMovementSpeed;
+    public float comPlayerSpeed;
+    public float comPlayerSpeedMultiplier;
+    public float leftGoalX;
+    public float rightGoalX;
+    public float upperBoundsY;
+    public float lowerBoundsY;
+    public Vector2 centerScreen;
+    public float volume;
+    public boolean mute;
+    public Color paddleColor, ballColor, fontColor;
 
     public Constants() {
-        maxBallSpeed = 425f;
+        maxBallSpeed = 475f;
         maxBallAngle = 45f;
-        playerMovementSpeed = 278.5f;
+        playerMovementSpeed = 375f;
         comPlayerSpeed = 1.825f;
         comPlayerSpeedMultiplier = 1f;
         leftGoalX = -2.5f;
@@ -46,11 +48,11 @@ public class Constants {
         upperBoundsY = Gdx.graphics.getHeight() - 4.2f;
         lowerBoundsY = 0 + 4.2f;
         centerScreen = new Vector2(Gdx.graphics.getWidth()/2f, Gdx.graphics.getHeight()/2f);
-        if (centerScreen == null) {
-            centerScreen = new Vector2(Constants.CENTER_SCREEN);
-        }
         volume = 100;
         MUTE = false;
+        paddleColor = Color.WHITE;
+        ballColor = Color.WHITE;
+        fontColor = Color.WHITE;
     }
 
     public void setStaticFieldsToInstanceFields() {
@@ -66,6 +68,9 @@ public class Constants {
         CENTER_SCREEN = this.centerScreen;
         VOLUME = this.volume;
         MUTE = this.mute;
+        PADDLE_COLOR = this.paddleColor;
+        BALL_COLOR = this.ballColor;
+        FONT_COLOR = this.fontColor;
     }
 
     public void setMaxBallSpeed(float speed) {
@@ -93,5 +98,17 @@ public class Constants {
 
     public void setMute(boolean mute) {
         this.mute = mute;
+    }
+
+    public void setPaddleColor(Color color) {
+        this.paddleColor = color;
+    }
+
+    public void setBallColor(Color color) {
+        this.ballColor = color;
+    }
+
+    public void setFontColor(Color color) {
+        this.fontColor = color;
     }
 }

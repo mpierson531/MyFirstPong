@@ -1,5 +1,6 @@
 package com.mygdx.Pong.Screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -23,8 +23,6 @@ import com.mygdx.Pong.Engine.Files.FileHandler;
 import com.mygdx.Pong.Engine.Json.JsonHandler;
 import com.mygdx.Pong.Engine.UI.Artist2D;
 import com.mygdx.Pong.Engine.UI.TextButton;
-import com.mygdx.Pong.OnePlayerPong;
-import com.mygdx.Pong.TwoPlayerPong;
 
 import static com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
@@ -50,12 +48,21 @@ public class StartMenu implements Screen {
 
         stage = new Stage(new ScreenViewport());
 
+        constants = new Constants();
+
         jsonHandler = new JsonHandler();
-        fileHandler = new FileHandler(Gdx.files.internal("configFile.json").toString());
+        fileHandler = new FileHandler(Gdx.files.local("configFile.json").toString());
+
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop
+                && !FileHandler.exists(Gdx.files.local("configFile.json"))) {
+            fileHandler.createFile();
+            jsonHandler.serialize(constants, fileHandler.getFile());
+        }
+
+        constants = (Constants) jsonHandler.deserialize(fileHandler.getFile(), constants);
+        constants.setStaticFieldsToInstanceFields();
 
         artist2D = new Artist2D();
-
-        constants = new Constants();
 
         spriteBatch = new SpriteBatch();
 
@@ -65,14 +72,14 @@ public class StartMenu implements Screen {
         fontParams.gamma = 1;
         fontParams.size = 35;
         fontParams.mono = true;
-        fontParams.color = Color.WHITE;
+        fontParams.color = Constants.FONT_COLOR;
         pixelButtonFont = fontGenerator.generateFont(fontParams);
 
         fontParams = new FreeTypeFontParameter();
         fontParams.gamma = 1;
         fontParams.size = 50;
         fontParams.mono = true;
-        fontParams.color = Color.WHITE;
+        fontParams.color = Constants.FONT_COLOR;
         pixelLabelFont = fontGenerator.generateFont(fontParams);
         fontGenerator.dispose();
 
@@ -132,7 +139,7 @@ public class StartMenu implements Screen {
 
     private void setupTitleLabel() {
         LabelStyle labelStyle = new LabelStyle();
-        labelStyle.fontColor = Color.WHITE;
+        labelStyle.fontColor = Constants.FONT_COLOR;
         labelStyle.font = pixelLabelFont;
 
         titleLabel = new Label("My First Pong", labelStyle);
@@ -141,12 +148,6 @@ public class StartMenu implements Screen {
     }
 
     private void setupTextButtons() {
-        BaseDrawable defaultDrawable = new BaseDrawable();
-        defaultDrawable.setTopHeight(5);
-        defaultDrawable.setBottomHeight(5);
-        defaultDrawable.setLeftWidth(5);
-        defaultDrawable.setRightWidth(5);
-
         textButtonStyle = new TextButtonStyle();
         textButtonStyle.font = pixelButtonFont;
 
@@ -173,16 +174,7 @@ public class StartMenu implements Screen {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                    if (!StartMenu.this.fileHandler.fileExists()) {
-                        StartMenu.this.fileHandler.createFile();
-                        StartMenu.this.jsonHandler.serialize(StartMenu.this.constants, StartMenu.this.fileHandler.getFile());
-                        StartMenu.this.constants.setStaticFieldsToInstanceFields();
-                    } else {
-                        StartMenu.this.constants = (Constants) jsonHandler.deserialize(fileHandler.getFile(), StartMenu.this.constants);
-                        StartMenu.this.constants.setStaticFieldsToInstanceFields();
-                    }
-
-                StartMenu.this.game.setScreen(new OnePlayerPong(StartMenu.this.game));
+                StartMenu.this.game.setScreen(new OnePlayerPong(StartMenu.this.game, spriteBatch, artist2D));
                 StartMenu.this.dispose();
             }
         });
@@ -190,7 +182,7 @@ public class StartMenu implements Screen {
         twoPlayerButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                StartMenu.this.game.setScreen(new TwoPlayerPong(StartMenu.this.game));
+                StartMenu.this.game.setScreen(new TwoPlayerPong(StartMenu.this.game, spriteBatch, artist2D));
                 StartMenu.this.dispose();
             }
         });
@@ -198,15 +190,6 @@ public class StartMenu implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!StartMenu.this.fileHandler.fileExists()) {
-                    StartMenu.this.fileHandler.createFile();
-                    StartMenu.this.jsonHandler.serialize(StartMenu.this.constants, StartMenu.this.fileHandler.getFile());
-                    StartMenu.this.constants.setStaticFieldsToInstanceFields();
-                } else {
-                    StartMenu.this.constants = (Constants) jsonHandler.deserialize(StartMenu.this.fileHandler.getFile(), StartMenu.this.constants);
-                    StartMenu.this.constants.setStaticFieldsToInstanceFields();
-                }
-
                 StartMenu.this.game.setScreen(new SettingsScreen(StartMenu.this.game,
                         StartMenu.this.artist2D,
                         StartMenu.this.textButtonStyle,

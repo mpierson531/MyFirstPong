@@ -10,11 +10,10 @@ public class ComPlayer {
     private final Rectangle playerRect;
     private int score;
     private float distanceToCover;
-    private float movementDistance;
 
     public ComPlayer() {
         score = 0;
-        playerRect = new Rectangle(Gdx.graphics.getWidth() - 50, 50, 30f, 100f);
+        playerRect = new Rectangle(Gdx.graphics.getWidth() - 65, 50, 30f, 100f);
     }
 
     public void keepInBounds() {
@@ -24,9 +23,8 @@ public class ComPlayer {
 
     public void move(Circle ballClone, float offset) {
         if (playerRect.getY() != ballClone.getY()) {
-            movementDistance = (MathUtils.clamp(distanceToCover - offset,
-                    -Constants.COM_PLAYER_SPEED, Constants.COM_PLAYER_SPEED)) * Constants.COM_PLAYER_SPEED_MULTIPLIER;
-            playerRect.y += movementDistance;
+            float movementDistance = (distanceToCover - offset) * Constants.COM_PLAYER_SPEED_MULTIPLIER;
+            playerRect.y += movementDistance * Gdx.graphics.getDeltaTime();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.mygdx.Pong.Engine.Files;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
 import java.util.Arrays;
@@ -65,17 +66,17 @@ public class FileHandler {
 
     public void createFile() {
         try {
-            Gdx.files.internal(file.getName()).writeString("", false);
+            Gdx.files.local(file.getName()).writeString("", false);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     public void createFile(String fileName) {
-        Gdx.files.internal(fileName).writeString("", false);
+        Gdx.files.local(fileName).writeString("", false);
     }
 
-    public boolean fileExists() {
+    public boolean exists() {
         return file.exists();
     }
 
@@ -117,6 +118,15 @@ public class FileHandler {
     public void setFile(File file) {
         this.filePath = file.getPath();
         this.file = file;
+    }
+
+    public static boolean exists(String filePath) {
+        File file = new File(filePath);
+        return file.exists();
+    }
+
+    public static boolean exists(FileHandle fileHandle) {
+        return fileHandle.exists();
     }
 
     public BufferedReader getReader() {

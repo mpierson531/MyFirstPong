@@ -261,25 +261,68 @@ public class Artist2D {
         shapeRenderer.end();
     }
 
-    public TextureRegionDrawable getFilledRectDrawable(Actor actor, Color color) {
+    public Pixmap getPixmap(int width, int height, Pixmap.Format colorFormat, Color color, String shape, String shapeType) {
+        Pixmap pixmap = new Pixmap(width, height, colorFormat);
+        pixmap.setColor(color);
+        pixmap.setFilter(Pixmap.Filter.BiLinear);
+
+        if ((shape.equalsIgnoreCase("rect") || shape.equalsIgnoreCase("rectangle"))
+                && shapeType.equalsIgnoreCase("filled")) {
+            pixmap.fillRectangle(0, 0, width, height);
+        } else if ((shape.equalsIgnoreCase("rect") || shape.equalsIgnoreCase("rectangle"))
+                && shapeType.equalsIgnoreCase("line")) {
+            pixmap.drawRectangle(0, 0, width, height);
+        } else if (shape.equalsIgnoreCase("circle") && shapeType.equalsIgnoreCase("filled")) {
+            pixmap.fillCircle(width / 2, height / 2, width / 2 - 1);
+        } else if (shape.equalsIgnoreCase("circle") && shapeType.equalsIgnoreCase("line")) {
+            pixmap.drawCircle(width / 2, height / 2, width / 2 - 1);
+        }
+
+        return pixmap;
+    }
+
+    public TextureRegionDrawable getTextureRegionDrawable(Actor actor, Color color, String shape, String shapeType) {
         Pixmap pixmap = new Pixmap((int) actor.getWidth(), (int) actor.getHeight(), Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
-        pixmap.fillRectangle((int) actor.getX(), (int) actor.getY(), (int) actor.getWidth(), (int) actor.getHeight());
-        return new TextureRegionDrawable(new Texture(pixmap));
+        pixmap.setFilter(Pixmap.Filter.BiLinear);
+
+        if ((shape.equalsIgnoreCase( "rect") || shape.equalsIgnoreCase("rectangle"))
+                && shapeType.equalsIgnoreCase("filled")) {
+            pixmap.fillRectangle(0, 0, (int) actor.getWidth(), (int) actor.getHeight());
+        } else if ((shape.equalsIgnoreCase( "rect") || shape.equalsIgnoreCase("rectangle"))
+                && shapeType.equalsIgnoreCase("line")) {
+            pixmap.drawRectangle(0, 0, (int) actor.getWidth(), (int) actor.getHeight());
+        } else if (shape.equalsIgnoreCase( "circle") && shapeType.equalsIgnoreCase("filled")) {
+            pixmap.fillCircle((int) actor.getWidth() / 2, (int) actor.getHeight() / 2, (int) actor.getWidth() / 2);
+        } else if (shape.equalsIgnoreCase("circle") && shapeType.equalsIgnoreCase("line")) {
+            pixmap.drawCircle((int) actor.getWidth() / 2, (int) actor.getHeight() / 2, (int) actor.getWidth() / 2);
+        }
+
+        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(new Texture(pixmap, true));
+        pixmap.dispose();
+        return textureRegionDrawable;
     }
 
-    public TextureRegionDrawable getFilledRectDrawable(Vector2 position, float width, float height, Color color) {
-        Pixmap pixmap = new Pixmap((int) position.x, (int) position.y, Pixmap.Format.RGBA8888);
+    public TextureRegionDrawable getTextureRegionDrawable(Vector2 position, float width, float height, Color color, String shape, String shapeType) {
+        Pixmap pixmap = new Pixmap((int) width, (int) height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
-        pixmap.fillRectangle((int) position.x, (int) position.y, (int) width, (int) height);
-        return new TextureRegionDrawable(new Texture(pixmap));
-    }
+        pixmap.setFilter(Pixmap.Filter.BiLinear);
 
-    public TextureRegionDrawable getFilledRectDrawable(Vector2 position, Vector2 size, Color color) {
-        Pixmap pixmap = new Pixmap((int) position.x, (int) position.y, Pixmap.Format.RGBA8888);
-        pixmap.setColor(color);
-        pixmap.fillRectangle((int) position.x, (int) position.y, (int) size.x, (int) size.y);
-        return new TextureRegionDrawable(new Texture(pixmap));
+        if ((shape.equalsIgnoreCase( "rect") || shape.equalsIgnoreCase("rectangle"))
+                && shapeType.equalsIgnoreCase("filled")) {
+            pixmap.fillRectangle(0, 0, (int) width, (int) height);
+        } else if ((shape.equalsIgnoreCase( "rect") || shape.equalsIgnoreCase("rectangle"))
+                && shapeType.equalsIgnoreCase("line")) {
+            pixmap.drawRectangle(0, 0, (int) width, (int) height);
+        } else if (shape.equalsIgnoreCase( "circle") && shapeType.equalsIgnoreCase("filled")) {
+            pixmap.fillCircle((int) width / 2, (int) height / 2, (int) width / 2);
+        } else if (shape.equalsIgnoreCase("circle") && shapeType.equalsIgnoreCase("line")) {
+            pixmap.drawCircle((int) width / 2, (int) height / 2, (int) width / 2);
+        }
+
+        TextureRegionDrawable textureRegionDrawable = new TextureRegionDrawable(new Texture(pixmap, true));
+        pixmap.dispose();
+        return textureRegionDrawable;
     }
 
     public ShapeRenderer getShapeRenderer() {

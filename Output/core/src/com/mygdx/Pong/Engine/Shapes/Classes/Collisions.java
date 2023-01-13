@@ -8,15 +8,16 @@ public class Collisions {
     private Vector2 distanceToPlayer = new Vector2();
     private Vector2 closestPointToPlayer = new Vector2();
 
-    /** Pong-specific below **/
+    /** Pong-specific **/
     public float calculateDeflectionAngle(Rectangle rectangle, Circle circle) {
         float relativeIntersectY = (rectangle.getCenterY()) - (circle.getCenterY());
         float normalIntersectY = relativeIntersectY / (rectangle.getHeight()/2);
         float theta = normalIntersectY * Constants.MAX_BALL_ANGLE;
-        return MathUtils.clamp((float) Math.toRadians(theta), -Constants.MAX_BALL_SPEED, Constants.MAX_BALL_SPEED);
+        System.out.println((float) Math.toRadians(theta));
+        return (float) MathUtils.clamp(Math.toRadians(theta), -Constants.MAX_BALL_SPEED, Constants.MAX_BALL_SPEED);
     }
 
-    /** Pong-specific below **/
+    /** Pong-specific **/
     public float calculateDeflectionAngle(float centerY, Circle circle) {
         float relativeIntersectY = (centerY) - (circle.getCenterY());
         float normalIntersectY = relativeIntersectY / (centerY);
@@ -39,10 +40,11 @@ public class Collisions {
             closestPointToPlayer.y = rectangle.getMaxY();
         }
 
-        distanceToPlayer = new Vector2(circle.getCenter().sub(closestPointToPlayer));
+        distanceToPlayer = new Vector2(circle.getCenter().clone().sub(closestPointToPlayer));
+        float distanceLengthSquared = distanceToPlayer.len2();
 
-        return distanceToPlayer.len2() <= circle.getRadius() * circle.getRadius();
-    }
+        return distanceLengthSquared <= (circle.getRadius()) * (circle.getRadius());
+     }
 
     public void reset() {
         distanceToPlayer = new Vector2(0,0);

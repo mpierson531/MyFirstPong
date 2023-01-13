@@ -15,6 +15,7 @@ public class ImageButton extends com.badlogic.gdx.scenes.scene2d.ui.ImageButton 
         setPosition(position.x, position.y);
         setSize(size.x, size.y);
         setBackground(backgroundImage.getDrawable());
+        super.setBackground(backgroundImage.getDrawable());
     }
 
     public void drawOutline(Artist2D artist2D, Color color) {
