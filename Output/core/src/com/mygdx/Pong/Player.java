@@ -2,7 +2,7 @@ package com.mygdx.Pong;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.mygdx.Pong.Engine.Shapes.Classes.Rectangle;
+import com.mygdx.Pong.Engine.Shapes.Rectangle;
 
 public class Player {
     private final Rectangle playerRect;

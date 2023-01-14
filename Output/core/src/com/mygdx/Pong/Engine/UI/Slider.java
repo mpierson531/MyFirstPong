@@ -1,13 +1,11 @@
 package com.mygdx.Pong.Engine.UI;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.mygdx.Pong.Engine.Math.Vector2;
-import com.mygdx.Pong.Engine.Shapes.Classes.Circle;
-import com.mygdx.Pong.Engine.Shapes.Classes.Rectangle;
-import com.mygdx.Pong.Engine.Shapes.Interfaces.Shape;
+import com.mygdx.Pong.Engine.Shapes.Circle;
+import com.mygdx.Pong.Engine.Shapes.Rectangle;
+import com.mygdx.Pong.Engine.Shapes.Shape;
 
 public class Slider {
     private Array<Shape> steps;

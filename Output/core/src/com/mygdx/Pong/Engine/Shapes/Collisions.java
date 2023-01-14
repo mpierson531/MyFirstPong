@@ -1,4 +1,4 @@
-package com.mygdx.Pong.Engine.Shapes.Classes;
+package com.mygdx.Pong.Engine.Shapes;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

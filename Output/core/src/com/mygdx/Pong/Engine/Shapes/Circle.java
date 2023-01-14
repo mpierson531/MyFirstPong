@@ -1,8 +1,7 @@
-package com.mygdx.Pong.Engine.Shapes.Classes;
+package com.mygdx.Pong.Engine.Shapes;
 
 import com.badlogic.gdx.Gdx;
 import com.mygdx.Pong.Engine.Math.Vector2;
-import com.mygdx.Pong.Engine.Shapes.Interfaces.Shape;
 
 public class Circle extends com.badlogic.gdx.math.Circle implements Shape, Cloneable {
     private float height;

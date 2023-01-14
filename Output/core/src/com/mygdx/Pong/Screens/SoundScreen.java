@@ -15,7 +15,7 @@ import com.mygdx.Pong.Constants;
 import com.mygdx.Pong.Engine.Files.FileHandler;
 import com.mygdx.Pong.Engine.Json.JsonHandler;
 import com.mygdx.Pong.Engine.Math.Vector2;
-import com.mygdx.Pong.Engine.Shapes.Classes.Rectangle;
+import com.mygdx.Pong.Engine.Shapes.Rectangle;
 import com.mygdx.Pong.Engine.UI.Artist2D;
 import com.mygdx.Pong.Engine.UI.CheckBox;
 import com.mygdx.Pong.Engine.UI.Label;
